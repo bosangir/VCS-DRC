@@ -38,7 +38,6 @@ The PNG and PDF versions of the poster were rendered with Microsoft Edge in head
 ## To confirm before deployment
 
 - **Active interview duration:** how it will be recorded.
-- **In-form date checks:** whether to add same, reversed and same-age date checks to the CAPI.
 - **Inaccessible reasons:** the detailed list.
 
 PSUs, segments and households in the demonstration are simulated.
