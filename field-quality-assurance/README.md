@@ -9,9 +9,11 @@ The rules come from the Sankuru Study Protocol V1.0 (5 November 2026), SOP-01 Co
 | Folder | What it is | Use it for |
 |---|---|---|
 | `01_Key_messages_by_role/` | Word guide in French and English: six messages for everyone, then what each role does before, during and after fieldwork; disposition codes; alerts A1–A13; changes after the BGC review; points to confirm; the enumerator daily self-check | Handout and the outline of the training |
+| `02_Minutes_BGC_meetings/` | Combined minutes of the BGC and UNIKIN meetings of 13 and 16 November 2026 (internal, not in the public repository) | Briefing the team leads |
 | `03_Process_infographic/` | Poster with pictograms: the 10 steps from preparation to independent checks, the red lines, what is new, and who does what (HTML, PNG, PDF; French and English) | Slide, printed poster, WhatsApp image |
 | `04_Segment_protocol_demo/` | Interactive demonstration of the segment protocol in a simulated PSU, with two scenarios: correct protocol and common errors. Also still figures of each scenario | Live demonstration during the training |
-| `_build/` | Python scripts that generate the guide and the poster | Changing the text and rebuilding |
+| `05_Website/` (in the repository: `docs/`) | One-page website (French and English) with everything above plus two live demonstrations of CAPI 006 checks: card dates and active interview duration. Published from the `docs/` folder of the VCS-DRC repository | Showing the material on a projector or phone; sharing one link |
+| `_build/` | Python scripts that generate the guide, the poster and the website | Changing the text and rebuilding |
 
 ## Running the segment demonstration
 
@@ -31,13 +33,17 @@ What each scenario shows:
 ```
 python _build/build_infographic.py 03_Process_infographic
 python _build/build_docs.py . path/to/logo.png
+python _build/build_site.py . ../docs
 ```
 
 The PNG and PDF versions of the poster were rendered with Microsoft Edge in headless mode from the HTML files.
 
+## Active interview duration
+
+Decided 18 November 2026: CAPI version 006 records the time the form is open on screen (`duration()`), frozen at consent, at the start and end of each woman's interview, and at the visit result. `dur_interview_min` is the duration to report; `flag_short_interview` marks alerts A4/A5. Enumerators save and close the form when they leave a household.
+
 ## To confirm before deployment
 
-- **Active interview duration:** how it will be recorded.
 - **Inaccessible reasons:** the detailed list.
 
 PSUs, segments and households in the demonstration are simulated.

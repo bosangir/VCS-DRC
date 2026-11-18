@@ -167,8 +167,8 @@ EN = {
  "bgc": [
   ("Segments skipped and one side of a road uncovered, while the form said the segments were covered (13 Nov).", "The disposition code is checked against the GPS map before a PSU is closed. A record is submitted for empty or abandoned areas too.", "Team chief, supervisor, DQM"),
   ("Whole PSUs canvassed without following the segment order in small PSUs (Kongo Central).", "Not allowed in Sankuru. Segments are always worked in ascending order, even in small PSUs. If the quota is not reached after every segment is exhausted, the PSU is recorded as exhausted below quota; teams never work outside the PSU to make up numbers.", "Supervisor, coordinator, DQM"),
-  ("Forms left open all day: end time minus start time does not show interview length (16 Nov).", "Keeping a form open to return is allowed. We report the active interview duration.", "Data management"),
-  ("Card dates: the same date for two doses of a series, reversed order, or different dates for doses due at the same age (16 Nov).", "CAPI version 005 lists them on one screen at the end of the card. The enumerator rechecks the card, corrects or confirms, and writes a comment for same or reversed dates and dates before birth. A future date cannot be saved. Rates are reported by enumerator.", "Enumerator, data management"),
+  ("Forms left open all day: end time minus start time does not show interview length (16 Nov).", "Keeping a form open to return is allowed. CAPI version 006 records active time (time the form is on screen) from consent to the visit result, for the household and for each woman. Interviews under 15 minutes, or under 25 minutes with a child aged 12–23 months, are flagged for review.", "Data management"),
+  ("Card dates: the same date for two doses of a series, reversed order, or different dates for doses due at the same age (16 Nov).", "CAPI version 006 lists them on one screen at the end of the card. The enumerator rechecks the card, corrects or confirms, and writes a comment for same or reversed dates and dates before birth. A future date cannot be saved. Rates are reported by enumerator.", "Enumerator, data management"),
   ("Dates partly readable or only a tick.", "Allowed when true. The rate per enumerator is tracked and discussed in debriefs.", "Enumerator, supervisor"),
   ("GiveWell asked why segments were inaccessible.", "Detailed reason codes (forest, water, insecurity, other) under the overall inaccessible code.", "Data management, supervisor"),
   ("Card dates corrected after the HBR review.", "BGC makes the corrections on its side; both the original and the corrected data sets are kept.", "Data management"),
@@ -176,7 +176,6 @@ EN = {
  "open_h": "Points to confirm before or during the training",
  "open": [
   "Number of visits. SOP-01 allows at most 2 visits to an absent household; an earlier supervisor poster showed a third attempt. Use 2.",
-  "Active duration. Decide how it is recorded in the CAPI (for example a timer on the interview sections) before the form is final.",
   "Detailed inaccessible codes. Agree the list of reasons under D and E–F and share it with BGC.",
  ],
  "card_h": "Enumerator daily self-check",
@@ -361,8 +360,8 @@ FR = {
  "bgc": [
   ("Segments sautés et un côté de route non couvert, alors que le formulaire disait les segments couverts (13 nov.).", "Le code de disposition est vérifié sur la carte GPS avant de clôturer un PSU. Une fiche est aussi soumise pour les zones vides ou abandonnées.", "Chef d'équipe, superviseur, responsable qualité"),
   ("PSU entiers couverts sans suivre l'ordre des segments dans les petits PSU (Kongo Central).", "Interdit au Sankuru. Les segments sont toujours travaillés par numéro croissant, même dans les petits PSU. Si le quota n'est pas atteint après avoir épuisé tous les segments, le PSU est noté « épuisé sous le quota » ; on ne travaille jamais hors du PSU pour compléter.", "Superviseur, coordinateur, responsable qualité"),
-  ("Formulaires ouverts toute la journée : l'heure de fin moins l'heure de début ne montre pas la durée de l'entretien (16 nov.).", "Garder un formulaire ouvert pour revenir est autorisé. On rapporte la durée active de l'entretien.", "Gestion des données"),
-  ("Dates de carte : même date pour deux doses d'une série, ordre inversé, ou dates différentes pour des doses du même âge (16 nov.).", "La CAPI version 005 les liste sur un seul écran en fin de carte. L'enquêteur revérifie la carte, corrige ou confirme, et écrit un commentaire pour les dates identiques ou inversées et les dates avant la naissance. Une date future ne peut pas être enregistrée. Les taux sont suivis par enquêteur.", "Enquêteur, gestion des données"),
+  ("Formulaires ouverts toute la journée : l'heure de fin moins l'heure de début ne montre pas la durée de l'entretien (16 nov.).", "Garder un formulaire ouvert pour revenir est autorisé. La CAPI version 006 enregistre la durée active (temps où le formulaire est à l'écran) du consentement au résultat de la visite, pour le ménage et pour chaque femme. Les entretiens de moins de 15 minutes, ou de moins de 25 minutes avec un enfant de 12–23 mois, sont signalés pour revue.", "Gestion des données"),
+  ("Dates de carte : même date pour deux doses d'une série, ordre inversé, ou dates différentes pour des doses du même âge (16 nov.).", "La CAPI version 006 les liste sur un seul écran en fin de carte. L'enquêteur revérifie la carte, corrige ou confirme, et écrit un commentaire pour les dates identiques ou inversées et les dates avant la naissance. Une date future ne peut pas être enregistrée. Les taux sont suivis par enquêteur.", "Enquêteur, gestion des données"),
   ("Dates partiellement lisibles ou seulement une coche.", "Autorisé quand c'est vrai. Le taux par enquêteur est suivi et discuté aux débriefings.", "Enquêteur, superviseur"),
   ("GiveWell a demandé pourquoi des segments étaient inaccessibles.", "Codes de motif détaillés (forêt, eau, insécurité, autre) sous le code global « inaccessible ».", "Gestion des données, superviseur"),
   ("Dates de carte corrigées après la revue HBR.", "BGC fait les corrections de son côté ; on garde les données d'origine et les données corrigées.", "Gestion des données"),
@@ -370,7 +369,6 @@ FR = {
  "open_h": "Points à confirmer avant ou pendant la formation",
  "open": [
   "Nombre de passages. La SOP-01 autorise au plus 2 passages chez un ménage absent ; une ancienne affiche des superviseurs montrait une 3e tentative. Utiliser 2.",
-  "Durée active. Décider comment elle est enregistrée dans la CAPI (par exemple un chronomètre sur les sections de l'entretien) avant de finaliser le formulaire.",
   "Codes détaillés d'inaccessibilité. Arrêter la liste des motifs sous D et E–F et la partager avec BGC.",
  ],
  "card_h": "Auto-contrôle quotidien de l'enquêteur",
