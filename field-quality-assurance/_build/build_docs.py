@@ -162,6 +162,7 @@ MIN = {
   "BGC applies card date corrections on its side; original and corrected data are both kept.",
   "Records outside PSU boundaries are kept and explained, not deleted.",
   "Whole-PSU canvassing is acceptable when the entire PSU is covered; a list of such PSUs or periods goes to BGC.",
+  "UNIKIN decision after the meeting (18 Nov 2026): Sankuru keeps strict segment order. Whole-PSU canvassing out of order (code B) is not used there; a PSU whose quota is not reached after every segment is exhausted is recorded as exhausted below quota.",
   "Partial or illegible dates and tick-only evidence are allowed, with use tracked by enumerator.",
   "Detailed inaccessible reason codes will be added under the overall inaccessible code.",
  ],

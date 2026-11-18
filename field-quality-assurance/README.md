@@ -8,22 +8,23 @@ The rules come from the Sankuru Study Protocol V1.0 (5 November 2026), SOP-01 Co
 
 | Folder | What it is | Use it for |
 |---|---|---|
-| `01_Key_messages_by_role/` | Word guide in French and English: five messages for everyone, then what each role does before, during and after fieldwork; disposition codes; alerts A1–A13; changes after the BGC review; points to confirm; the enumerator daily self-check | Handout and the outline of the training |
+| `01_Key_messages_by_role/` | Word guide in French and English: six messages for everyone, then what each role does before, during and after fieldwork; disposition codes; alerts A1–A13; changes after the BGC review; points to confirm; the enumerator daily self-check | Handout and the outline of the training |
 | `03_Process_infographic/` | Poster with pictograms: the 10 steps from preparation to independent checks, the red lines, what is new, and who does what (HTML, PNG, PDF; French and English) | Slide, printed poster, WhatsApp image |
-| `04_Segment_protocol_demo/` | Interactive demonstration of the segment protocol in a simulated PSU, with three scenarios: correct protocol, common errors, and whole-PSU canvassing (code B). Also still figures of each scenario | Live demonstration during the training |
+| `04_Segment_protocol_demo/` | Interactive demonstration of the segment protocol in a simulated PSU, with two scenarios: correct protocol and common errors. Also still figures of each scenario | Live demonstration during the training |
 | `_build/` | Python scripts that generate the guide and the poster | Changing the text and rebuilding |
 
 ## Running the segment demonstration
 
 Open `04_Segment_protocol_demo/segment_protocol_demo.html` in any browser; it works offline. Choose a scenario, then **Play**, **Next step** (one structure at a time, good for discussion) or **Jump to end**. The FR / EN buttons switch language.
 
-URL options, for making still images: `?mode=correct|errors|whole`, `?lang=fr|en`, `?final=1`.
+URL options, for making still images: `?mode=correct|errors`, `?lang=fr|en`, `?final=1`.
 
 What each scenario shows:
 
 1. **Correct protocol.** Arrival at the centroid, Segment 1 first, serpentine sweep, one record for every structure (including vacant, no eligible child, absent and refusal). The quota is reached partway through Segment 2, but the segment is finished. Then the team returns to absent households (at most 2 visits) and gives every segment from 1 to the highest reached a code.
 2. **Common errors**, modelled on the BGC map review. The team starts in the wrong segment, leaves Segment 1 half done, replaces a refusal with a neighbour, jumps to Segment 8, and leaves when the quota is reached. Red circles mark households that had no chance of selection, and the declared "A" codes do not match the map.
-3. **Whole PSU (code B).** Every segment and every structure is covered, whatever the number order. Codes are B (interviews), C (no interviews) and D (inaccessible: forest). This scenario applies only with the field supervisor's authorisation, and the list of these PSUs goes to BGC.
+
+**Segment order is strict in Sankuru** (decision of 18 November 2026). Whole-PSU canvassing out of order (code B) is not used, even in small PSUs. If the quota is not reached after every segment is exhausted, the PSU is recorded as exhausted below quota.
 
 ## Rebuilding
 
@@ -36,7 +37,6 @@ The PNG and PDF versions of the poster were rendered with Microsoft Edge in head
 
 ## To confirm before deployment
 
-- **Whole-PSU canvassing:** the Sankuru SOP-01 V1.0 removed the full-PSU amendment, but BGC accepted code B.
 - **Active interview duration:** how it will be recorded.
 - **In-form date checks:** whether to add same, reversed and same-age date checks to the CAPI.
 - **Inaccessible reasons:** the detailed list.

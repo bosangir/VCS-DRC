@@ -70,7 +70,6 @@ td.code.bad{color:var(--ref)}
 <div class="tabs">
   <button data-m="correct" class="on" id="tab_correct"></button>
   <button data-m="errors" class="bad" id="tab_errors"></button>
-  <button data-m="whole" class="whole" id="tab_whole"></button>
 </div>
 <main>
   <div class="mapcard">
@@ -156,7 +155,7 @@ fr:{
   "Refus : enregistré, jamais remplacé par un voisin.",
   "Segment inaccessible : seul le superviseur décide. Code D à F et motif sur le formulaire de disposition, DQM informé le jour même.",
   "Code pour chaque segment, du 1 au plus haut atteint. Le code doit correspondre à la carte des points GPS.",
-  "PSU entier hors ordre (code B) : seulement sur autorisation écrite du superviseur ; la liste des PSU va à BGC."
+  "Pas de PSU entier hors ordre au Sankuru. Quota non atteint après tous les segments : PSU « épuisé sous le quota », jamais de travail hors du PSU."
  ],
  foot:"Démonstration de formation. PSU, segments et ménages simulés. Règles : SOP-01 Segment compact, Sankuru V1.0 (7 novembre 2026) et Plan DQA V1.0. Le protocole d'étude V1.0 prime en cas de différence."
 },
@@ -201,7 +200,7 @@ en:{
   "Refusal: recorded, never replaced by a neighbour.",
   "Inaccessible segment: only the field supervisor decides. Code D to F and the reason on the disposition form; DQM told the same day.",
   "A code for every segment from 1 to the highest reached. The code must match the map of GPS points.",
-  "Whole PSU out of order (code B): only with the field supervisor's written authorisation; the PSU list goes to BGC."
+  "No whole-PSU canvassing out of order in Sankuru. Quota not reached after every segment: PSU \"exhausted below quota\", never work outside the PSU."
  ],
  foot:"Training demonstration. PSU, segments and households are simulated. Rules: SOP-01 Compact Segment Protocol, Sankuru V1.0 (7 November 2026) and DQA Plan V1.0. The Study Protocol V1.0 governs where they differ."
 }};
@@ -471,7 +470,7 @@ document.getElementById('reset').onclick=reset;
 document.getElementById('finish').onclick=finish;
 const q=new URLSearchParams(location.search);
 if(q.get('lang')==='en'){lang='en';document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x.dataset.l==='en'))}
-if(q.get('mode')){mode=q.get('mode');document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.m===mode))}
+if(q.get('mode')&&q.get('mode')!=='whole'){mode=q.get('mode');document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.m===mode))}
 applyLang();reset();
 if(q.get('final'))finish();
 </script>
