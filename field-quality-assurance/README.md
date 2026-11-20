@@ -23,7 +23,7 @@ URL options, for making still images: `?mode=correct|errors`, `?lang=fr|en`, `?f
 
 What each scenario shows:
 
-1. **Correct protocol.** Arrival at the centroid, Segment 1 first, serpentine sweep, one record for every structure (including vacant, no eligible child, absent and refusal). The quota is reached partway through Segment 2, but the segment is finished. Then the team returns to absent households (at most 2 visits) and gives every segment from 1 to the highest reached a code.
+1. **Correct protocol.** Arrival at the centroid, Segment 1 first, serpentine sweep, one record for every structure (including vacant, no eligible child, absent and refusal). The quota is reached partway through Segment 2, but the segment is finished. Then the team returns to absent households (at most two revisits) and gives every segment from 1 to the highest reached a code.
 2. **Common errors**, modelled on the BGC map review. The team starts in the wrong segment, leaves Segment 1 half done, replaces a refusal with a neighbour, jumps to Segment 8, and leaves when the quota is reached. Red circles mark households that had no chance of selection, and the declared "A" codes do not match the map.
 
 **Segment order is strict in Sankuru** (decision of 18 November 2026). Whole-PSU canvassing out of order (code B) is not used, even in small PSUs. If the quota is not reached after every segment is exhausted, the PSU is recorded as exhausted below quota.

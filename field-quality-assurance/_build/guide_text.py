@@ -86,7 +86,7 @@ EN = {
     "Photograph the whole card: in focus, well lit, no shadow on the dates, child's name visible. Capture GPS at the door with 15 m accuracy or better.",
    ]),
    ("Absent, refusing, inaccessible", [
-    "Nobody home: record it, then return the same day or the next morning. At most 2 visits; after that it is a documented non-contact.",
+    "Nobody home: record it, then return the same day or the next morning. After the first visit, up to two revisits (3 visits in all); after that it is a documented non-contact.",
     "Caregiver absent but the child is with another adult: do not interview. Record as absent and return.",
     "Refusal: record it, collect no personal data, never replace it with the neighbour.",
     "A structure or area you cannot reach: record it with the reason and tell the team chief the same day. Never skip a segment on your own.",
@@ -101,7 +101,7 @@ EN = {
     "Confirm receipt of uploads from every team and report missing uploads (offline up to 3 days near Lodja, 5 days on intermediate axes, 7–10 days on remote and canoe axes).",
     "Run the alerts on each synchronised batch and send the list to the Data Quality Manager and the supervisors the same day.",
     "Compare the segment disposition forms with the CAPI data: interviews per segment and per PSU must add up, and segments must appear in ascending order with any deviation documented.",
-    "Merge the two visits of a household into one record (second-visit flag, HHI08 link) and report orphans and conflicts.",
+    "Merge the visits of a household (the first visit and up to two revisits) into one record (revisit flag, HHI08 link) and report orphans and conflicts.",
    ]),
    ("What to add this round", [
     "Report active interview duration, not end time minus start time, because forms may be left open to return to a household.",
@@ -175,7 +175,6 @@ EN = {
  ],
  "open_h": "Points to confirm before or during the training",
  "open": [
-  "Number of visits. SOP-01 allows at most 2 visits to an absent household; an earlier supervisor poster showed a third attempt. Use 2.",
   "Detailed inaccessible codes. Agree the list of reasons under D and E–F and share it with BGC.",
  ],
  "card_h": "Enumerator daily self-check",
@@ -279,7 +278,7 @@ FR = {
     "Photographier toute la carte : nette, bien éclairée, sans ombre sur les dates, nom de l'enfant visible. Prendre le GPS devant la porte, précision de 15 m ou mieux.",
    ]),
    ("Absents, refus, inaccessibles", [
-    "Personne à la maison : faire la fiche, puis revenir le jour même ou le lendemain matin. Au plus 2 passages ; ensuite c'est un non-contact documenté.",
+    "Personne à la maison : faire la fiche, puis revenir le jour même ou le lendemain matin. Après le premier passage, au plus deux revisites (3 passages au total) ; ensuite c'est un non-contact documenté.",
     "Le soignant est absent mais l'enfant est avec un autre adulte : ne pas interroger. Noter absent et revenir.",
     "Refus : faire la fiche, ne recueillir aucune donnée personnelle, ne jamais remplacer par le voisin.",
     "Une structure ou une zone inaccessible : la noter avec le motif et informer le chef d'équipe le jour même. Ne jamais sauter un segment de votre propre chef.",
@@ -294,7 +293,7 @@ FR = {
     "Confirmer la réception des téléversements de chaque équipe et signaler les manquants (hors ligne jusqu'à 3 jours près de Lodja, 5 jours sur les axes intermédiaires, 7–10 jours sur les axes éloignés et en pirogue).",
     "Faire tourner les alertes sur chaque lot synchronisé et envoyer la liste au responsable qualité et aux superviseurs le jour même.",
     "Comparer les formulaires de disposition aux données CAPI : les entretiens par segment et par PSU doivent concorder, et les segments doivent apparaître par ordre croissant, tout écart étant documenté.",
-    "Fusionner les deux passages d'un ménage en un seul enregistrement (flag 2e visite, lien HHI08) et signaler les orphelins et les conflits.",
+    "Fusionner les passages d'un ménage (le premier passage et au plus deux revisites) en un seul enregistrement (flag revisite, lien HHI08) et signaler les orphelins et les conflits.",
    ]),
    ("À ajouter pour cette enquête", [
     "Rapporter la durée active de l'entretien, et non l'heure de fin moins l'heure de début, car un formulaire peut rester ouvert pour revenir au ménage.",
@@ -368,7 +367,6 @@ FR = {
  ],
  "open_h": "Points à confirmer avant ou pendant la formation",
  "open": [
-  "Nombre de passages. La SOP-01 autorise au plus 2 passages chez un ménage absent ; une ancienne affiche des superviseurs montrait une 3e tentative. Utiliser 2.",
   "Codes détaillés d'inaccessibilité. Arrêter la liste des motifs sous D et E–F et la partager avec BGC.",
  ],
  "card_h": "Auto-contrôle quotidien de l'enquêteur",
