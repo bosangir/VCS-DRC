@@ -3,476 +3,709 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Segment Protocol Demo</title>
+<title>Segment Protocol Scenarios</title>
 <style>
 :root{
   --navy:#12305a; --navy2:#1d4a85; --ink:#1f2933; --muted:#5b6876; --line:#d5dbe3;
   --bg:#f4f6f9; --card:#ffffff;
-  --ok:#2e8b57; --ok-l:#d8efe1; --young:#5fb3a8; --noel:#8fa3b8; --abs:#e8902a; --ref:#c83b3b;
-  --vac:#ffffff; --miss:#d62828; --prog:#fff3c4; --done:#e3f3e8; --skip:#f1e1e1; --idle:#eef1f5;
-  --yellow:#f5c400;
+  --ok:#2e8b57; --young:#5fb3a8; --noel:#8fa3b8; --abs:#e8902a; --abs2:#a8641c; --ref:#c83b3b;
+  --miss:#d62828; --prog:#fff3c4; --done:#e3f3e8; --skip:#f6dede; --coded:#e6ecf5; --idle:#eef1f5;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.4}
-header{background:var(--navy);color:#fff;padding:18px 24px 14px}
-header h1{margin:0;font-size:26px;letter-spacing:.2px}
-header p{margin:4px 0 0;color:#cfe0f5;font-size:15px}
-.lang{float:right}
-.lang button{background:transparent;border:1px solid #9fb8d9;color:#fff;border-radius:4px;padding:3px 10px;margin-left:4px;cursor:pointer;font-weight:600}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;line-height:1.35;
+  display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:minmax(0,1fr);overflow:hidden}
+header,.app{min-width:0}
+header{background:var(--navy);color:#fff;padding:8px 16px;display:flex;align-items:center;gap:14px}
+header h1{margin:0;font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header p{margin:0;color:#cfe0f5;font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang button{background:transparent;border:1px solid #9fb8d9;color:#fff;border-radius:4px;padding:2px 9px;margin-left:4px;cursor:pointer;font-weight:600}
 .lang button.on{background:#fff;color:var(--navy)}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;padding:14px 24px 0}
-.tabs button{border:1px solid var(--line);background:#fff;border-radius:6px 6px 0 0;padding:9px 14px;font-size:15px;cursor:pointer;color:var(--ink)}
-.tabs button.on{background:var(--navy2);color:#fff;border-color:var(--navy2);font-weight:600}
-.tabs button.bad.on{background:var(--ref);border-color:var(--ref)}
-.tabs button.whole.on{background:#6b4fa0;border-color:#6b4fa0}
-main{display:flex;gap:16px;flex-wrap:wrap;padding:0 24px 18px}
-.mapcard{background:var(--card);border:1px solid var(--line);border-radius:0 8px 8px 8px;padding:10px;flex:1 1 760px;min-width:0}
-svg#map{width:100%;height:auto;display:block}
-.banner{min-height:48px;margin:6px 4px 8px;padding:10px 14px;border-radius:6px;background:#eaf1fb;border-left:5px solid var(--navy2);font-weight:600}
+.app{display:grid;grid-template-columns:236px minmax(0,1fr) 318px;gap:10px;padding:10px;min-height:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;min-height:0}
+#list{overflow:auto;padding:8px}
+#list h2{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:4px 4px 8px}
+.sc{border-bottom:1px solid var(--line);padding:6px 4px 7px}
+.sc .t{font-weight:600;font-size:13px;color:var(--navy)}
+.sc .c{font-size:11.5px;color:var(--muted);margin:1px 0 4px}
+.sc button{border:1px solid var(--line);background:#fff;border-radius:4px;padding:2px 8px;font-size:12px;cursor:pointer;margin-right:4px}
+.sc button.ok.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.sc button.bad.on{background:var(--ref);border-color:var(--ref);color:#fff}
+.center{display:flex;flex-direction:column;padding:8px;gap:6px}
+.banner{min-height:42px;padding:7px 12px;border-radius:6px;background:#eaf1fb;border-left:5px solid var(--navy2);font-weight:600;font-size:14px}
 .banner.warn{background:#fdecec;border-left-color:var(--ref)}
 .banner.good{background:#e6f5ec;border-left-color:var(--ok)}
-.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 4px 2px}
-.controls button{border:none;border-radius:5px;padding:8px 14px;background:var(--navy2);color:#fff;font-size:14px;cursor:pointer;font-weight:600}
+.mapwrap{flex:1;min-height:0;position:relative}
+svg#map{width:100%;height:100%;display:block}
+.controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.controls button{border:none;border-radius:5px;padding:6px 12px;background:var(--navy2);color:#fff;font-size:13px;cursor:pointer;font-weight:600}
 .controls button.sec{background:#e3e8ef;color:var(--ink)}
-.controls label{color:var(--muted);font-size:13px;margin-left:6px}
-.side{flex:0 1 380px;display:flex;flex-direction:column;gap:12px;min-width:280px}
-.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
-.box h3{margin:0 0 8px;font-size:15px;color:var(--navy);text-transform:uppercase;letter-spacing:.4px}
-.counters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}
-.counters div{background:var(--idle);border-radius:6px;padding:6px 4px}
-.counters b{display:block;font-size:24px;color:var(--navy)}
-.counters span{font-size:12px;color:var(--muted)}
-.quota{height:12px;background:var(--idle);border-radius:6px;margin-top:10px;overflow:hidden}
+.controls label{color:var(--muted);font-size:12px;margin-left:4px}
+.controls .verdict{margin-left:auto;font-weight:700;font-size:12px;padding:3px 9px;border-radius:12px}
+.verdict.ok{background:#e6f5ec;color:var(--ok)} .verdict.bad{background:#fdecec;color:var(--ref)}
+#legend{position:absolute;left:6px;bottom:6px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:none;
+  grid-template-columns:20px 1fr;gap:3px 7px;font-size:12px;align-items:center;max-width:330px}
+#legend.on{display:grid}
+.side{display:flex;flex-direction:column;gap:8px;min-height:0}
+.box{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 11px}
+.box h3{margin:0 0 5px;font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:.4px}
+#situ .st{font-weight:600;margin-bottom:4px}
+#situ ul{margin:0;padding-left:17px;font-size:12.5px}
+#situ li{margin-bottom:2px}
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;text-align:center}
+.counters div{background:var(--idle);border-radius:6px;padding:4px 2px}
+.counters b{display:block;font-size:19px;color:var(--navy);line-height:1.15}
+.counters span{font-size:10.5px;color:var(--muted);line-height:1.1;display:block}
+.quota{height:9px;background:var(--idle);border-radius:5px;margin-top:6px;overflow:hidden;position:relative}
 .quota i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
-.legend{display:grid;grid-template-columns:22px 1fr;gap:5px 8px;font-size:13px;align-items:center}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{border-bottom:1px solid var(--line);padding:4px 5px;text-align:left;vertical-align:top}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{border-bottom:1px solid var(--line);padding:2px 4px;text-align:left;vertical-align:top}
 th{color:var(--muted);font-weight:600}
-td.code{font-weight:700;font-size:15px;text-align:center}
+td.code{font-weight:700;text-align:center;white-space:nowrap}
 td.code.bad{color:var(--ref)}
-#log{max-height:200px;overflow:auto;font-size:13px;padding-left:0;margin:0;list-style:none}
-#log li{padding:4px 0;border-bottom:1px dashed var(--line)}
+#psuline{margin-top:5px;font-size:12px;font-weight:600}
+#psuline.bad{color:var(--ref)}
+.grow{flex:1;min-height:70px;display:flex;flex-direction:column}
+#log{overflow:auto;font-size:12px;padding:0;margin:0;list-style:none;flex:1;min-height:0}
+#log li{padding:3px 0;border-bottom:1px dashed var(--line)}
 #log li.alert{color:var(--ref);font-weight:600}
 #log li.good{color:var(--ok)}
-.rules{padding:0 24px 24px}
-.rules .box{columns:2 340px;column-gap:28px}
-.rules li{margin-bottom:6px;break-inside:avoid}
-.foot{color:var(--muted);font-size:12px;padding:0 24px 20px}
-@media (max-width:700px){header h1{font-size:20px}main,.tabs,.rules,.foot{padding-left:12px;padding-right:12px}}
+#disp{max-height:150px;overflow:auto}
+body.embed header{display:none}
+body.embed{grid-template-rows:minmax(0,1fr)}
+body.embed .app{grid-template-columns:minmax(0,1fr) 290px;padding:6px;gap:6px}
+body.embed #list{display:none}
+body.video #list{display:none}
+body.video .app{grid-template-columns:minmax(0,1fr) 330px}
+body.video .controls button,body.video .controls label{display:none}
+@media (max-width:980px){
+  body{overflow:auto;display:block}
+  .app{grid-template-columns:1fr}
+  .mapwrap{height:62vh}
+  #list{max-height:none}
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="lang"><button data-l="fr" class="on">FR</button><button data-l="en">EN</button></div>
   <h1 id="t_title"></h1>
   <p id="t_sub"></p>
+  <div class="lang"><button data-l="fr" class="on">FR</button><button data-l="en">EN</button></div>
 </header>
-<div class="tabs">
-  <button data-m="correct" class="on" id="tab_correct"></button>
-  <button data-m="errors" class="bad" id="tab_errors"></button>
-</div>
-<main>
-  <div class="mapcard">
+<div class="app">
+  <nav class="panel" id="list"></nav>
+  <div class="panel center">
     <div class="banner" id="banner"></div>
-    <svg id="map" viewBox="0 0 800 560" role="img" aria-label="PSU map"></svg>
+    <div class="mapwrap"><svg id="map" viewBox="0 0 860 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="PSU map"></svg><div id="legend"></div></div>
     <div class="controls">
       <button id="play"></button>
       <button id="step" class="sec"></button>
       <button id="reset" class="sec"></button>
       <button id="finish" class="sec"></button>
-      <label><span id="t_speed"></span> <input type="range" id="speed" min="1" max="10" value="5"></label>
+      <button id="legbtn" class="sec"></button>
+      <label><span id="t_speed"></span> <input type="range" id="speed" min="1" max="10" value="6"></label>
+      <span class="verdict" id="verdict"></span>
     </div>
   </div>
   <div class="side">
+    <div class="box" id="situ"></div>
     <div class="box">
       <h3 id="t_count"></h3>
       <div class="counters">
         <div><b id="c_rec">0</b><span id="t_rec"></span></div>
         <div><b id="c_int">0</b><span id="t_int"></span></div>
         <div><b id="c_abs">0</b><span id="t_abs"></span></div>
+        <div><b id="c_rev">0</b><span id="t_rev"></span></div>
       </div>
       <div class="quota"><i id="qbar"></i></div>
     </div>
     <div class="box">
       <h3 id="t_disp"></h3>
-      <table><thead><tr><th id="t_seg"></th><th id="t_code"></th><th id="t_recs"></th><th id="t_ints"></th></tr></thead><tbody id="disp"></tbody></table>
-      <div id="dispnote" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
+      <div id="disp"><table><thead><tr><th id="t_seg"></th><th id="t_code"></th><th id="t_recs"></th><th id="t_ints"></th></tr></thead><tbody id="dispb"></tbody></table></div>
+      <div id="psuline"></div>
     </div>
-    <div class="box">
-      <h3 id="t_log"></h3>
-      <ul id="log"></ul>
-    </div>
-    <div class="box">
-      <h3 id="t_leg"></h3>
-      <div class="legend" id="legend"></div>
-    </div>
+    <div class="box grow"><h3 id="t_log"></h3><ul id="log"></ul></div>
   </div>
-</main>
-<section class="rules"><div class="box"><h3 id="t_rules"></h3><ol id="rules"></ol></div></section>
-<div class="foot" id="t_foot"></div>
+</div>
 
 <script>
-// ---------------------------------------------------------------- text
-const T = {
-fr:{
- title:"Le protocole des segments compacts : démonstration",
- sub:"Un PSU découpé en 12 segments numérotés au hasard par BGC. Suivez l'enquêteur : segment 1 d'abord, chaque structure, une fiche par structure.",
- tab_correct:"1. Protocole correct", tab_errors:"2. Erreurs fréquentes", tab_whole:"3. PSU entier (code B)",
- play:"▶ Lecture", pause:"❚❚ Pause", step:"Étape suivante", reset:"Recommencer", finish:"Aller à la fin", speed:"Vitesse",
- count:"Compteurs du PSU", rec:"fiches soumises", int:"entretiens 12–23 mois (quota ≈ 5)", abs:"absents à revoir",
- disp:"Disposition des segments", seg:"Seg.", code:"Code", recs:"Fiches", ints:"Entr.",
- log:"Journal et alertes", leg:"Légende", rules:"Les règles à retenir",
- o:{C:"Entretien 12–23 mois (compte pour le quota)",Y:"Enfant 0–11 mois seulement : entretien, hors quota",N:"Pas d'enfant de 0–23 mois : fiche « non éligible »",A:"Absent : fiche, puis revisite (au plus deux revisites)",A2:"Toujours absent après deux revisites : non-contact documenté",R:"Refus : fiche, jamais remplacé par le voisin",V:"Inoccupé ou non résidentiel : fiche quand même",M:"Structure sans fiche (manquée)",U:"Pas encore visitée"},
- segleg:{idle:"Segment pas encore travaillé",prog:"Segment en cours",done:"Segment épuisé et déclaré",bad:"Segment mal travaillé"},
- start:"Choisissez un scénario puis appuyez sur Lecture.",
- arrive:"Arrivée au centroïde du PSU : il sert à la navigation seulement. Personne n'est interrogé ici.",
- enter:s=>`Segment ${s} : le marqueur est dans le polygone. Le sens de balayage est fixé (serpentin) et ne change plus.`,
- quota:"Quota atteint, mais le segment n'est pas fini : on continue jusqu'à la dernière structure (Règle 5.1).",
- segdone:(s,n)=>`Segment ${s} épuisé : ${n} fiches. Déclaré au chef d'équipe, code A.`,
- next:s=>`Prochain segment = numéro ${s}, pas le voisin le plus proche. On navigue par numéro sur la carte.`,
- revisit:"Retour chez les absents avant de clôturer le PSU (au plus deux revisites, flag revisite).",
- closed:"PSU clôturé : un code pour chaque segment, du 1 au plus haut atteint. Les segments 3 à 12 ne sont pas requis.",
- qnote:"Les segments 3 à 12 n'ont pas été nécessaires : le quota a été atteint dans le segment 2 et le segment 2 a été épuisé.",
- e_start:"ERREUR : départ au segment 9 parce qu'il est près de la route. Le segment de départ est toujours le 1.",
- e_half:n=>`ALERTE A11 : segment 1 quitté avant d'être épuisé. ${n} structures sans fiche à l'est.`,
- e_repl:"ERREUR : le ménage refusant a été « remplacé » par le voisin. Interdit : le refus est enregistré tel quel.",
- e_jump:"ALERTE A3 : segment 8 commencé alors que les segments 2 à 7 n'ont pas été faits.",
- e_quit:n=>`ALERTE A11 : quota atteint, segment 8 quitté à moitié. ${n} structures sans fiche.`,
- e_end:"Résultat : les cercles rouges sont des ménages qui n'avaient aucune chance d'être choisis. L'échantillon est biaisé.",
- e_code:"Codes déclarés « A » mais la carte montre des structures manquées : incohérent (cf. revue BGC du 13 novembre).",
- w_note:"À utiliser seulement si le superviseur l'autorise et le note. La liste de ces PSU est envoyée à BGC.",
- w_start:"PSU entier : l'équipe couvre tous les segments, quel que soit l'ordre des numéros, et chaque structure reçoit une fiche.",
- w_seg:s=>`Segment ${s} couvert entièrement (hors ordre des numéros).`,
- w_done:"PSU entièrement couvert. Codes B (entretiens), C (aucun entretien), D (inaccessible : forêt).",
- forest:"Forêt",
- rulesList:[
-  "Le segment de départ est toujours le <b>segment 1</b>. BGC a tiré les numéros au hasard : personne ne le choisit.",
-  "Un segment à la fois, par <b>numéro croissant</b>. Le segment suivant n'est pas forcément le voisin.",
-  "<b>Chaque structure</b> le long de la ligne de balayage, sans exception, et <b>une fiche par structure</b> avec point GPS ≤ 15 m.",
-  "Une zone vide ou abandonnée reçoit aussi une fiche (structure inoccupée) : elle prouve que la zone a été vérifiée.",
-  "<b>Quota atteint ? On finit quand même le segment.</b> Puis on s'arrête et on remplit la disposition.",
-  "Absent : revisite le même jour ou le lendemain matin. Au plus deux revisites, puis non-contact documenté.",
-  "Refus : enregistré, jamais remplacé par un voisin.",
-  "Segment inaccessible : seul le superviseur décide. Code D à F et motif sur le formulaire de disposition, DQM informé le jour même.",
-  "Code pour chaque segment, du 1 au plus haut atteint. Le code doit correspondre à la carte des points GPS.",
-  "Pas de PSU entier hors ordre au Sankuru. Quota non atteint après tous les segments : PSU « épuisé sous le quota », jamais de travail hors du PSU."
- ],
- foot:"Démonstration de formation. PSU, segments et ménages simulés. Règles : SOP-01 Segment compact, Sankuru V1.0 (7 novembre 2026) et Plan DQA V1.0. Le protocole d'étude V1.0 prime en cas de différence."
-},
-en:{
- title:"The compact segment protocol: a demonstration",
- sub:"A PSU divided into 12 segments numbered at random by BGC. Follow the enumerator: Segment 1 first, every structure, one record per structure.",
- tab_correct:"1. Correct protocol", tab_errors:"2. Common errors", tab_whole:"3. Whole PSU (code B)",
- play:"▶ Play", pause:"❚❚ Pause", step:"Next step", reset:"Restart", finish:"Jump to end", speed:"Speed",
- count:"PSU counters", rec:"records submitted", int:"interviews 12–23 months (quota ≈ 5)", abs:"absent, to revisit",
- disp:"Segment disposition", seg:"Seg.", code:"Code", recs:"Records", ints:"Int.",
- log:"Log and alerts", leg:"Legend", rules:"Rules to remember",
- o:{C:"Interview 12–23 months (counts toward quota)",Y:"Child 0–11 months only: interview, outside quota",N:"No child aged 0–23 months: \"not eligible\" record",A:"Absent: record, then a revisit (at most two revisits)",A2:"Still absent after two revisits: documented non-contact",R:"Refusal: record, never replaced by a neighbour",V:"Vacant or non-residential: record it anyway",M:"Structure with no record (missed)",U:"Not yet visited"},
- segleg:{idle:"Segment not yet worked",prog:"Segment in progress",done:"Segment exhausted and declared",bad:"Segment worked incorrectly"},
- start:"Choose a scenario, then press Play.",
- arrive:"Arrival at the PSU centroid: it is for navigation only. Nobody is interviewed here.",
- enter:s=>`Segment ${s}: the marker is inside the polygon. The sweep direction is fixed (serpentine) and does not change.`,
- quota:"Quota reached, but the segment is not finished: keep going to the last structure (Rule 5.1).",
- segdone:(s,n)=>`Segment ${s} exhausted: ${n} records. Declared to the team chief, code A.`,
- next:s=>`Next segment = number ${s}, not the nearest neighbour. Navigate by number on the map.`,
- revisit:"Return to absent households before closing the PSU (at most two revisits, revisit flag).",
- closed:"PSU closed: a code for every segment from 1 to the highest reached. Segments 3 to 12 are not required.",
- qnote:"Segments 3 to 12 were not needed: the quota was reached in Segment 2, and Segment 2 was exhausted.",
- e_start:"ERROR: started in Segment 9 because it is near the road. The starting segment is always Segment 1.",
- e_half:n=>`ALERT A11: Segment 1 left before it was exhausted. ${n} structures on the east side have no record.`,
- e_repl:"ERROR: the refusing household was \"replaced\" by the neighbour. Not allowed: the refusal is recorded as it is.",
- e_jump:"ALERT A3: Segment 8 started while Segments 2 to 7 were not done.",
- e_quit:n=>`ALERT A11: quota reached, Segment 8 left half done. ${n} structures have no record.`,
- e_end:"Result: the red circles are households that had no chance of being selected. The sample is biased.",
- e_code:"Codes declared \"A\" but the map shows missed structures: inconsistent (see BGC review of 13 November).",
- w_note:"Use only when the field supervisor authorises it and writes it down. The list of these PSUs goes to BGC.",
- w_start:"Whole PSU: the team covers every segment, whatever the number order, and every structure gets a record.",
- w_seg:s=>`Segment ${s} fully covered (outside number order).`,
- w_done:"PSU fully covered. Codes B (interviews), C (no interviews), D (inaccessible: forest).",
- forest:"Forest",
- rulesList:[
-  "The starting segment is always <b>Segment 1</b>. BGC drew the numbers at random: nobody chooses it.",
-  "One segment at a time, in <b>ascending number</b>. The next segment is not always the neighbour.",
-  "<b>Every structure</b> along the sweep line, no exceptions, and <b>one record per structure</b> with a GPS point ≤ 15 m.",
-  "An empty or abandoned area also gets a record (vacant structure): it proves the area was checked.",
-  "<b>Quota reached? Finish the segment anyway.</b> Then stop and complete the disposition.",
-  "Absent: revisit the same day or next morning. At most two revisits, then a documented non-contact.",
-  "Refusal: recorded, never replaced by a neighbour.",
-  "Inaccessible segment: only the field supervisor decides. Code D to F and the reason on the disposition form; DQM told the same day.",
-  "A code for every segment from 1 to the highest reached. The code must match the map of GPS points.",
-  "No whole-PSU canvassing out of order in Sankuru. Quota not reached after every segment: PSU \"exhausted below quota\", never work outside the PSU."
- ],
- foot:"Training demonstration. PSU, segments and households are simulated. Rules: SOP-01 Compact Segment Protocol, Sankuru V1.0 (7 November 2026) and DQA Plan V1.0. The Study Protocol V1.0 governs where they differ."
-}};
+// ===================================================================== text
+const L=(fr,en)=>({fr,en});
+let lang='fr';
+const tx=o=>o==null?'':(typeof o==='string'?o:(o[lang]!==undefined?o[lang]:o.fr));
+const TARGET=6;
+const UI={
+ title:L("Le protocole des segments compacts : scénarios","The compact segment protocol: scenarios"),
+ sub:L("Chaque situation du formulaire de disposition, jouée deux fois : la bonne pratique et l'erreur. Cible : 6 entretiens d'enfants de 12–23 mois par PSU.",
+       "Each situation on the disposition form, played twice: the right practice and the mistake. Target: 6 interviews of children aged 12–23 months per PSU."),
+ list:L("Scénarios","Scenarios"), correct:L("Correct","Correct"), wrong:L("Erreur","Wrong"),
+ play:L("▶ Lecture","▶ Play"), pause:L("❚❚ Pause","❚❚ Pause"), step:L("Étape suivante","Next step"), reset:L("Recommencer","Restart"),
+ finish:L("Aller à la fin","Jump to end"), leg:L("Légende","Legend"), speed:L("Vitesse","Speed"),
+ count:L("Compteurs du PSU","PSU counters"), rec:L("fiches soumises","records submitted"), int:L("entretiens 12–23 m (cible 6)","interviews 12–23 m (target 6)"),
+ abs:L("absents à revoir","absent, to revisit"), rev:L("revisites faites","revisits made"),
+ disp:L("Disposition (formulaire)","Disposition (form)"), seg:L("Seg.","Seg."), code:L("Code","Code"), recs:L("Fiches","Records"), ints:L("Entr.","Int."),
+ log:L("Journal et alertes","Log and alerts"), psu:L("Code PSU","PSU code"), start:L("Appuyez sur Lecture.","Press Play."),
+ vok:L("BONNE PRATIQUE","RIGHT PRACTICE"), vbad:L("CE QU'IL NE FAUT PAS FAIRE","WHAT NOT TO DO"),
+ centroid:L("centroïde","centroid"), sup:L("Superviseur","Supervisor"), coord:L("Coordination","Coordination"), chief:L("Chef d'équipe","Team chief"),
+ outside:L("Hors du PSU","Outside the PSU"), backup:L("PSU de réserve","Backup PSU"),
+ o:{C:L("Entretien 12–23 mois (compte pour la cible)","Interview 12–23 months (counts toward the target)"),
+    Y:L("Enfant 0–11 mois seulement : entretien hors cible","Child 0–11 months only: interview, not in target"),
+    N:L("Pas d'enfant de 0–23 mois : fiche « non éligible »","No child aged 0–23 months: \"not eligible\" record"),
+    A:L("Absent : fiche, puis revisite (au plus deux)","Absent: record, then a revisit (at most two)"),
+    A2:L("Toujours absent après deux revisites : non-contact","Still absent after two revisits: non-contact"),
+    R:L("Refus : fiche, jamais remplacé","Refusal: record, never replaced"),
+    V:L("Inoccupé ou non résidentiel : fiche quand même","Vacant or non-residential: record anyway"),
+    E:L("Fiche « zone vide » avec GPS et photo","\"Empty area\" record with GPS and photo"),
+    M:L("Structure sans fiche (manquée)","Structure with no record (missed)")},
+ segleg:{prog:L("Segment en cours","Segment in progress"),done:L("Segment épuisé et déclaré","Segment exhausted and declared"),
+    coded:L("Segment codé sans entretien (C à G)","Segment coded without interviews (C to G)"),bad:L("Segment mal travaillé ou non codé","Segment worked wrongly or not coded")},
+ foot:L("Démonstration de formation. PSU, segments et ménages simulés. Règles : SOP-01 Sankuru V1.0, formulaire de disposition V2 (20 nov. 2026).",
+        "Training demonstration. Simulated PSU, segments and households. Rules: SOP-01 Sankuru V1.0, disposition form V2 (20 Nov 2026).")
+};
 
-// ---------------------------------------------------------------- geometry
+// ===================================================================== random + geometry
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-const R = rng(20261118);
-const COLS=4, ROWS=3, X0=40, Y0=34, CW=180, RH=164;
-const P=[];
-for(let r=0;r<=ROWS;r++){P.push([]);for(let c=0;c<=COLS;c++){
-  const edge=(r==0||r==ROWS||c==0||c==COLS);
-  const j=edge?26:30;
-  P[r].push({x:X0+c*CW+(R()*2-1)*j, y:Y0+r*RH+(R()*2-1)*j});
-}}
-const NUM=[[7,3,10,5],[9,1,8,11],[4,12,6,2]];
-const segs={};
-for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
-  const A=P[r][c],B=P[r][c+1],C=P[r+1][c+1],D=P[r+1][c];
-  segs[NUM[r][c]]={n:NUM[r][c],r,c,quad:[A,B,C,D],st:[]};
-}
-function bil(q,u,v){const[A,B,C,D]=q;const tx=(1-u)*A.x+u*B.x,ty=(1-u)*A.y+u*B.y,bx=(1-u)*D.x+u*C.x,by=(1-u)*D.y+u*C.y;return{x:(1-v)*tx+v*bx,y:(1-v)*ty+v*by}}
-function centre(s){return bil(s.quad,.5,.5)}
-const COUNT={1:9,2:12,8:10,10:0};
-const BASE=['N','N','N','N','N','N','N','C','Y','A','V','V','R','N'];
-let all=[];
-for(const k in segs){
-  const s=segs[k]; const n=(k in COUNT)?COUNT[k]:5+Math.floor(R()*4);
-  let tries=0;
-  while(s.st.length<n && tries<4000){tries++;
-    const u=.1+R()*.8, v=.1+R()*.8, p=bil(s.quad,u,v);
-    if(Math.abs(u-.5)<.17&&Math.abs(v-.5)<.2)continue; // keep the segment number readable
-    if(all.some(o=>Math.hypot(o.x-p.x,o.y-p.y)<23))continue;
-    const st={x:p.x,y:p.y,u,v,seg:s.n,base:BASE[Math.floor(R()*BASE.length)],second:R()<.5?'C':'N'};
-    s.st.push(st);all.push(st);
+function bil(q,u,v){const[A,B,C,D]=q;const tx_=(1-u)*A.x+u*B.x,ty=(1-u)*A.y+u*B.y,bx=(1-u)*D.x+u*C.x,by=(1-u)*D.y+u*C.y;return{x:(1-v)*tx_+v*bx,y:(1-v)*ty+v*by}}
+const BIG=[[7,3,10,5],[9,1,8,11],[4,12,6,2]];
+// cfg: num (rows of segment numbers), x0,y0,cw,rh, seed, counts{n:k}, terrain{n:type}, out{n:[outcomes]}, sec{ 'n:i':[rev1,rev2] }, hidden{n:k}, outside:k, label
+function makePSU(cfg){
+  const R=rng(cfg.seed||20261120), num=cfg.num||BIG, ROWS=num.length, COLS=num[0].length;
+  const X0=cfg.x0||40, Y0=cfg.y0||34, CW=cfg.cw||(660/COLS), RH=cfg.rh||(492/ROWS);
+  const P=[];
+  for(let r=0;r<=ROWS;r++){P.push([]);for(let c=0;c<=COLS;c++){const edge=(r==0||r==ROWS||c==0||c==COLS);const j=edge?18:22;
+    P[r].push({x:X0+c*CW+(R()*2-1)*j,y:Y0+r*RH+(R()*2-1)*j})}}
+  const segs={},all=[];
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const n=num[r][c];
+    segs[n]={n,r,c,quad:[P[r][c],P[r][c+1],P[r+1][c+1],P[r+1][c]],st:[],hid:[],ter:(cfg.terrain||{})[n]||''}}
+  const ok=(t,u,v)=>{
+    if(Math.abs(u-.5)<.16&&Math.abs(v-.5)<.18)return false;
+    if(t==='river'){const m=.3+.3*u;return v>m+.17}
+    if(t==='halfswamp')return u<.5;
+    return true};
+  for(const k in segs){const s=segs[k];const t=s.ter;
+    let n=(cfg.counts&&k in cfg.counts)?cfg.counts[k]:((t==='forest'||t==='empty'||t==='g1'||t==='water')?0:5+Math.floor(R()*4));
+    let tries=0;
+    const place=(cnt,arr,test,flag)=>{let made=0;while(made<cnt&&tries<9000){tries++;const u=.08+R()*.84,v=.08+R()*.84;if(!test(u,v))continue;
+      const p=bil(s.quad,u,v);if(all.some(o=>Math.hypot(o.x-p.x,o.y-p.y)<22))continue;
+      const st={x:p.x,y:p.y,u,v,seg:s.n,base:'N',flag};arr.push(st);all.push(st);made++}};
+    place(n,s.st,(u,v)=>ok(t,u,v));
+    if(t==='halfswamp')place(3,s.hid,(u,v)=>u>.64&&!(Math.abs(u-.5)<.16&&Math.abs(v-.5)<.18),'beyond');
+    if(cfg.hidden&&cfg.hidden[k])place(cfg.hidden[k],s.hid,(u,v)=>true,'hidden');
+    s.st.sort((a,b)=>{const ba=Math.min(2,Math.floor(a.v*3)),bb=Math.min(2,Math.floor(b.v*3));if(ba!=bb)return ba-bb;return ba%2==0?a.u-b.u:b.u-a.u});
+    const o=(cfg.out||{})[k];s.st.forEach((x,i)=>{x.i=i;x.base=o?(o[i]||'N'):['N','N','N','C','Y','V','N'][Math.floor(R()*7)];
+      const sc=(cfg.sec||{})[k+':'+i];if(sc)x.sec=sc});
   }
-  s.st.sort((a,b)=>{const ba=Math.min(2,Math.floor(a.v*3)),bb=Math.min(2,Math.floor(b.v*3));if(ba!=bb)return ba-bb;return ba%2==0?a.u-b.u:b.u-a.u});
-  s.st.forEach((t,i)=>t.i=i);
+  const ring=[...P[0],...P.map(r=>r[COLS]).slice(1),...[...P[ROWS]].reverse().slice(1),...P.map(r=>r[0]).reverse().slice(1)];
+  const cent=bil([P[0][0],P[0][COLS],P[ROWS][COLS],P[ROWS][0]],.5,.5);
+  const outside=[];
+  if(cfg.outside){const bx=X0+COLS*CW+50;for(let i=0;i<cfg.outside;i++)outside.push({x:bx+(i%2)*34+R()*10,y:Y0+60+Math.floor(i/2)*44+R()*10,seg:0,out:true,base:'C'});}
+  return {cfg,segs,all,ring,cent,outside,label:cfg.label||''};
 }
-// scripted outcomes so the story is the same every time
-const S1=['N','C','A','N','V','R','Y','N','C']; segs[1].st.forEach((t,i)=>{t.base=S1[i]}); segs[1].st[2].second='A2';
-const S2=['N','C','N','A','C','V','N','C','N','R','C','N']; segs[2].st.forEach((t,i)=>{t.base=S2[i]}); segs[2].st[3].second='C';
-const S8=['N','C','C','N','C','N','C','V','A','N']; segs[8].st.forEach((t,i)=>{t.base=S8[i]});
-const S9=['N','V','C']; segs[9].st.forEach((t,i)=>{if(i<3)t.base=S9[i]});
-const CENT=bil([P[0][0],P[0][COLS],P[ROWS][COLS],P[ROWS][0]],.5,.5);
+const centre=s=>bil(s.quad,.5,.5);
+const entry=s=>bil(s.quad,.05,.07);
 
-// ---------------------------------------------------------------- scenarios
-function entry(s){return bil(s.quad,.04,.06)}
-function build(mode){
-  const L=[];
-  L.push({t:'banner',k:'arrive',cls:''});
-  L.push({t:'move',to:CENT,jump:true});
-  if(mode==='correct'){
-    for(const n of [1,2]){
-      const s=segs[n];
-      if(n===2){L.push({t:'banner',k:'next',a:2,cls:''});}
-      L.push({t:'move',to:entry(s),nav:true});
-      L.push({t:'seg',n,state:'prog'});
-      L.push({t:'banner',k:'enter',a:n,cls:''});
-      for(const st of s.st){L.push({t:'move',to:st});L.push({t:'visit',st,o:st.base});}
-      L.push({t:'seg',n,state:'done',code:'A'});
-      L.push({t:'banner',k:'segdone',a:n,b:s.st.length,cls:'good'});
-    }
-    L.push({t:'banner',k:'revisit',cls:''});
-    for(const n of [1,2])for(const st of segs[n].st)if(st.base==='A'){L.push({t:'move',to:st,notrail:true});L.push({t:'visit',st,o:st.second,second:true});}
-    L.push({t:'banner',k:'closed',cls:'good'});
-    L.push({t:'note',k:'qnote'});
-  }
-  if(mode==='errors'){
-    const s9=segs[9];
-    L.push({t:'move',to:entry(s9),nav:true});
-    L.push({t:'seg',n:9,state:'bad',code:'?'});
-    L.push({t:'alert',k:'e_start'});
-    for(const st of s9.st.slice(0,3)){L.push({t:'move',to:st});L.push({t:'visit',st,o:st.base});}
-    const s1=segs[1];
-    L.push({t:'move',to:entry(s1),nav:true});
-    L.push({t:'seg',n:1,state:'bad',code:'A'});
-    const west=s1.st.filter(t=>t.u<.5);
-    for(const st of west){L.push({t:'move',to:st});
-      if(st.base==='R'){L.push({t:'visit',st,o:'R'});L.push({t:'alert',k:'e_repl'});}
-      else L.push({t:'visit',st,o:st.base});}
-    L.push({t:'alert',k:'e_half',a:s1.st.length-west.length});
-    const s8=segs[8];
-    L.push({t:'move',to:entry(s8),nav:true});
-    L.push({t:'seg',n:8,state:'bad',code:'A'});
-    L.push({t:'alert',k:'e_jump'});
-    L.push({t:'quitAtQuota',seg:8});
-    L.push({t:'missed'});
-    L.push({t:'banner',k:'e_end',cls:'warn'});
-    L.push({t:'note',k:'e_code'});
-  }
-  if(mode==='whole'){
-    L.push({t:'banner',k:'w_start',cls:''});
-    L.push({t:'note',k:'w_note'});
-    for(let r=0;r<ROWS;r++){
-      const cols=[...Array(COLS).keys()]; if(r%2)cols.reverse();
-      for(const c of cols){
-        const s=segs[NUM[r][c]];
-        L.push({t:'seg',n:s.n,state:'prog'});
-        for(const st of s.st){L.push({t:'move',to:st,fast:true});L.push({t:'visit',st,o:st.base,fast:true});}
-        L.push({t:'seg',n:s.n,state:'done',code:'auto'});
-        L.push({t:'banner',k:'w_seg',a:s.n,cls:'',fast:true});
-      }
-    }
-    L.push({t:'banner',k:'revisit',cls:''});
-    for(const st of all)if(st.base==='A'){L.push({t:'move',to:st,notrail:true,fast:true});L.push({t:'visit',st,o:st.second,second:true,fast:true});}
-    L.push({t:'recode'});
-    L.push({t:'banner',k:'w_done',cls:'good'});
-  }
-  return L;
-}
+// ===================================================================== step builders
+// a builder keeps the running count of interviews so banners land on the right step
+function Bld(psu){this.psu=psu;this.s=[];this.int=0;this.quotaSaid=false}
+Bld.prototype={
+ add(o){this.s.push(o);return this},
+ say(t,cls){return this.add({t:'banner',m:t,cls:cls||''})},
+ warn(t){return this.add({t:'alert',m:t})},
+ note(t){return this.add({t:'log',m:t})},
+ arrive(){this.say(L("Arrivée au centroïde du PSU : il sert à naviguer. Personne n'est interrogé ici.","Arrival at the PSU centroid: it is for navigation only. Nobody is interviewed here."));
+   return this.add({t:'move',to:this.psu.cent,jump:true})},
+ enter(n,a,txt){const s=this.psu.segs[n];this.add({t:'move',to:entry(s),nav:true,a});this.add({t:'seg',n,state:'prog'});
+   return this.say(txt||L(`Segment ${n} : le marqueur est dans le polygone. Sens de balayage fixé (serpentin).`,`Segment ${n}: the marker is inside the polygon. Sweep direction fixed (serpentine).`))},
+ visit(st,o,a,extra){this.add(Object.assign({t:'move',to:st,a},extra&&extra.mv||{}));this.add(Object.assign({t:'visit',st,o:o||st.base,a},extra||{}));
+   if((o||st.base)==='C'){this.int++;if(this.int===TARGET&&!this.quotaSaid&&!(extra&&extra.silent)){this.quotaSaid=true;this.add({t:'quota'})}}return this},
+ sweep(n,opts){opts=opts||{};const s=this.psu.segs[n];let list=s.st;if(opts.filter)list=list.filter(opts.filter);
+   for(const st of list){if(opts.stopAtTarget&&this.int>=TARGET)break;
+     if(opts.each&&opts.each(st,this)===false)continue;this.visit(st,opts.o&&opts.o(st),opts.a)}return this},
+ declare(n,code,txt,state){this.add({t:'seg',n,state:state||'done',code});
+   const recs=this.psu.segs[n].st.length;
+   return this.say(txt||L(`Segment ${n} épuisé : déclaré au chef d'équipe, code ${code}.`,`Segment ${n} exhausted: declared to the team chief, code ${code}.`),'good')},
+ code(n,code,sub,state){return this.add({t:'seg',n,state:state||'coded',code,sub})},
+ next(n){return this.say(L(`Segment suivant = numéro ${n}, pas le voisin le plus proche. On navigue par numéro.`,`Next segment = number ${n}, not the nearest neighbour. Navigate by number.`))},
+ revisits(ns,a){const list=[];for(const n of ns)for(const st of this.psu.segs[n].st)if(st.base==='A')list.push(st);
+   if(!list.length)return this;
+   this.say(L("Revisites chez les absents avant de clôturer le PSU (au plus deux revisites).","Revisits to absent households before closing the PSU (at most two revisits)."));
+   for(const r of [1,2]){for(const st of list){const sec=st.sec||['A','A'];const prev=r===1?'A':sec[0];if(prev!=='A')continue;
+     const o=sec[r-1]==='A'&&r===2?'A2':sec[r-1];
+     this.add({t:'move',to:st,notrail:true,a});this.add({t:'visit',st,o,rev:r,a});if(o==='C'){this.int++}
+     this.note(r===1?(o==='A'?L("1re revisite : toujours absent. Nouvelle fiche, flag revisite.","1st revisit: still absent. New record, revisit flag."):L("1re revisite : ménage trouvé, entretien.","1st revisit: household found, interview."))
+                    :(o==='A2'?L("2e revisite : toujours absent. Non-contact documenté, pas de 3e revisite.","2nd revisit: still absent. Documented non-contact, no 3rd revisit."):L("2e revisite : ménage trouvé, entretien.","2nd revisit: household found, interview.")))}}
+   return this},
+ call(who,m,a){return this.add({t:'call',who,m,a})},
+ reply(who,m){return this.add({t:'reply',who,m})},
+ photo(a){return this.add({t:'photo',a})},
+ walk(n,a){const s=this.psu.segs[n];for(const [u,v] of [[.1,.18],[.9,.2],[.88,.5],[.12,.52],[.12,.82],[.9,.82]])this.add({t:'move',to:bil(s.quad,u,v),a});return this},
+ erec(n,a){const s=this.psu.segs[n];return this.add({t:'erec',n,at:bil(s.quad,.9,.82),a})},
+ psuCode(code,m,bad){return this.add({t:'psu',code,m,bad})},
+ missed(ns){return this.add({t:'missed',ns})},
+ done(){return this.s}
+};
 
-// ---------------------------------------------------------------- drawing
+// ===================================================================== scenarios
+const SC=[];
+function scen(o){SC.push(o)}
+const CL=L("Correct","Correct");
+
+// 1 ------------------------------------------------------------------ basic
+scen({id:'basic',title:L("Parcours de base","Basic canvassing"),codes:'A · PSU 1',
+ situ:L("La cible de 6 entretiens est atteinte au milieu du segment 2.","The target of 6 interviews is reached halfway through Segment 2."),
+ cfg:{seed:11,counts:{1:9,2:12,8:9,9:6},out:{1:['N','C','A','N','V','R','Y','N','C'],2:['N','C','C','N','A','C','V','C','N','R','N','N'],8:['N','C','C','N','C','N','C','V','N'],9:['N','V','C','N','N','Y']},
+      sec:{'1:2':['A','C'],'2:4':['C']}},
+ rules:{correct:[L("Segment 1 d'abord, puis numéro croissant.","Segment 1 first, then ascending numbers."),
+   L("Chaque structure, une fiche, soumise avant d'avancer.","Every structure, one record, submitted before walking on."),
+   L("Cible atteinte ? On finit le segment (règle 5.1).","Target reached? Finish the segment (Rule 5.1)."),
+   L("Absents : au plus deux revisites.","Absent households: at most two revisits.")],
+  wrong:[L("Ne jamais choisir le segment de départ.","Never choose the starting segment."),
+   L("Ne jamais quitter un segment à moitié.","Never leave a segment half done."),
+   L("Un refus n'est jamais remplacé par le voisin.","A refusal is never replaced by a neighbour."),
+   L("Le code « A » doit correspondre à la carte.","Code A must match the map.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2).enter(2).sweep(2).declare(2,'A');
+   b.revisits([1,2]);b.psuCode('1',L("Conduit selon le protocole","Conducted according to the protocol"));
+   b.say(L("PSU clôturé : un code pour chaque segment du 1 au plus haut atteint. Les segments 3 à 12 ne sont pas requis.","PSU closed: a code for every segment from 1 to the highest reached. Segments 3 to 12 are not required."),'good');return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();
+   b.enter(9,null,L("ERREUR : départ au segment 9 parce qu'il est près de la route.","ERROR: starts in Segment 9 because it is near the road."));b.add({t:'seg',n:9,state:'bad'});
+   b.warn(L("Le segment de départ est toujours le 1. Personne ne le choisit.","The starting segment is always Segment 1. Nobody chooses it."));
+   b.sweep(9);b.code(9,'?',null,'bad');
+   b.enter(1);b.add({t:'seg',n:1,state:'bad'});
+   for(const st of p.segs[1].st.filter(x=>x.u<.5)){if(st.base==='R'){b.add({t:'move',to:st});b.warn(L("Refus « remplacé » par le voisin et non enregistré : interdit.","Refusal \"replaced\" by the neighbour and not recorded: not allowed."));continue}b.visit(st)}
+   b.warn(L("ALERTE A11 : segment 1 quitté avant d'être épuisé.","ALERT A11: Segment 1 left before it was exhausted."));b.code(1,'A',null,'bad');
+   b.enter(8);b.add({t:'seg',n:8,state:'bad'});b.warn(L("ALERTE A3 : segment 8 commencé avant les segments 2 à 7.","ALERT A3: Segment 8 started before Segments 2 to 7."));
+   b.sweep(8,{stopAtTarget:true});b.warn(L("Cible atteinte : l'enquêteur part en laissant le segment 8 à moitié.","Target reached: the enumerator leaves with Segment 8 half done."));b.code(8,'A',null,'bad');
+   for(const n of [2,3,4,5,6,7])b.code(n,'?',null,'bad');b.missed([1,8]);b.psuCode('3',L("Pas selon le protocole","Not according to the protocol"),true);
+   b.say(L("Résultat : les cercles rouges sont des ménages qui n'avaient aucune chance d'être choisis. Échantillon biaisé.","Result: the red circles are households that had no chance of selection. The sample is biased."),'warn');return b.done()}});
+
+// 2 ------------------------------------------------------------------ quota in segment 1
+scen({id:'quota1',title:L("Cible atteinte dans le segment 1","Target reached in Segment 1"),codes:'A · PSU 1',
+ situ:L("Le segment 1 est grand : la 6e interview arrive alors qu'il reste des structures.","Segment 1 is large: the 6th interview comes while structures remain."),
+ cfg:{seed:21,counts:{1:14},out:{1:['N','C','C','N','C','V','C','N','C','Y','C','N','N','A']},sec:{'1:13':['C']}},
+ rules:{correct:[L("On finit le segment 1 en entier, même après 6 entretiens.","Finish Segment 1 completely, even after 6 interviews."),
+   L("On ne commence pas le segment 2.","Do not start Segment 2."),L("Les entretiens au-delà de 6 sont gardés.","Interviews beyond 6 are kept.")],
+  wrong:[L("Partir à la 6e interview laisse des ménages sans chance d'être choisis.","Leaving at the 6th interview leaves households with no chance of selection."),
+   L("Prohibé n° 3 de la SOP-01 ; alerte A11.","SOP-01 prohibited practice no. 3; alert A11.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.revisits([1]);
+   b.psuCode('1',L("Conduit selon le protocole","Conducted according to the protocol"));
+   b.say(L("PSU complet : segment 1 épuisé. Le segment 2 n'est pas commencé.","PSU complete: Segment 1 exhausted. Segment 2 is not started."),'good');return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1);b.add({t:'seg',n:1,state:'bad'});b.sweep(1,{stopAtTarget:true});
+   b.warn(L("ERREUR : départ dès la 6e interview, le segment n'est pas fini.","ERROR: leaves at the 6th interview, the segment is not finished."));
+   b.code(1,'A',null,'bad');b.missed([1]);b.psuCode('3',L("Pas selon le protocole","Not according to the protocol"),true);
+   b.say(L("ALERTE A11 : abandon précoce. Le code « A » ne correspond pas à la carte.","ALERT A11: early abandonment. Code A does not match the map."),'warn');return b.done()}});
+
+// 3 ------------------------------------------------------------------ flooded segment D1
+const SUP=L("Superviseur","Supervisor");
+scen({id:'flood',title:L("Segment inondé","Flooded segment"),codes:'D1 · PSU 2',
+ situ:L("La route vers le segment 2 est coupée par l'eau.","The road to Segment 2 is cut off by water."),
+ cfg:{seed:31,counts:{1:8,2:8,3:10},terrain:{2:'flood'},out:{1:['N','C','N','V','C','N','R','N'],3:['N','C','C','N','C','N','C','Y','N','N']}},
+ rules:{correct:[L("L'enquêteur s'arrête et appelle : il ne décide jamais seul.","The enumerator stops and calls: never decides alone."),
+   L("Le superviseur autorise le saut, code D1 + photo + source + visa.","The supervisor authorises the skip: code D1 + photo + source + approval."),
+   L("DQM informé le jour même ; PSU code 2.","DQM told the same day; PSU code 2.")],
+  wrong:[L("Sauter un segment sans appel ni fiche = prohibé.","Skipping a segment with no call and no record = prohibited."),
+   L("Le segment reste sans code : la carte ne s'explique pas.","The segment has no code: the map cannot be explained.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);
+   b.add({t:'move',to:entry(p.segs[2]),nav:true});b.say(L("Segment 2 : l'eau couvre la piste. L'enquêteur s'arrête au bord.","Segment 2: water covers the track. The enumerator stops at the edge."),'warn');
+   b.photo();b.call('sup',L("Segment 2 inondé, la piste est coupée. Photo prise.","Segment 2 flooded, track cut. Photo taken."));
+   b.reply('sup',L("N'entrez pas. Code D1, photo PH1, source SRC1, j'approuve (VR1). J'informe le DQM. Passez au segment 3.","Do not enter. Code D1, photo PH1, source SRC1, I approve (VR1). I'll tell the DQM. Go to Segment 3."));
+   b.code(2,'D1',L("inondation · SH2 · DU1","flooding · SH2 · DU1"));b.note(L("Segment 2 : D1, saut autorisé par le superviseur, DQM informé.","Segment 2: D1, skip authorised by the supervisor, DQM informed."));
+   b.next(3);b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('2',L("Selon le protocole, un segment inaccessible sauté","According to the protocol, one inaccessible segment skipped"));
+   b.say(L("PSU code 2 : le segment 2 sauté porte son sous-code D1 et ses champs.","PSU code 2: skipped Segment 2 carries its sub-code D1 and its fields."),'good');return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');
+   b.add({t:'move',to:entry(p.segs[2]),nav:true});b.warn(L("ERREUR : l'enquêteur voit l'eau et part au segment 3 sans appeler personne.","ERROR: the enumerator sees the water and goes to Segment 3 without calling anyone."));
+   b.code(2,'?',null,'bad');b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('?',L("Incohérent : segment 2 sans code ni visa","Inconsistent: Segment 2 has no code and no approval"),true);
+   b.say(L("Revue des cartes : segment 2 sans point GPS ni code. Le DQM ne peut pas savoir s'il y avait des enfants.","Map review: Segment 2 has no GPS point and no code. The DQM cannot tell whether children lived there."),'warn');return b.done()}});
+
+// 4 ------------------------------------------------------------------ uninhabited C1
+scen({id:'empty',title:L("Segment sans habitation","Uninhabited segment"),codes:'C1 · PSU 1',
+ situ:L("Le segment 2 semble vide depuis la piste.","Segment 2 looks empty from the track."),
+ cfg:{seed:41,counts:{1:8,2:0,3:11},terrain:{2:'empty'},out:{1:['N','C','N','A','C','V','N','N'],3:['C','N','C','N','N','C','Y','C','N','N','N']},sec:{'1:3':['A','C']}},
+ wrongcfg:{seed:41,counts:{1:8,2:0,3:11},terrain:{2:'empty'},hidden:{2:3},out:{1:['N','C','N','A','C','V','N','N'],3:['C','N','C','N','N','C','Y','C','N','N','N']},sec:{'1:3':['A','C']}},
+ rules:{correct:[L("On parcourt tout le segment, même s'il semble vide.","Walk the whole segment, even if it looks empty."),
+   L("Une fiche « zone vide » avec GPS et photo prouve la vérification.","An \"empty area\" record with GPS and photo proves the check."),
+   L("Code C1 : aucune habitation trouvée.","Code C1: no dwelling found.")],
+  wrong:[L("Coder C depuis la piste, sans y aller, est faux.","Coding C from the track, without going in, is wrong."),
+   L("Sans point GPS dans le segment, le code devient I (inconnu).","With no GPS point in the segment, the code becomes I (unknown).")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);b.enter(2);
+   b.walk(2);b.photo();b.erec(2);b.code(2,'C1',L("aucune habitation · SRC1 · PH1","no dwelling · SRC1 · PH1"));
+   b.say(L("Segment 2 parcouru en entier : aucune habitation. Fiche « zone vide », code C1.","Segment 2 walked in full: no dwelling. \"Empty area\" record, code C1."),'good');
+   b.next(3);b.enter(3).sweep(3).declare(3,'A');b.revisits([1,3]);
+   b.psuCode('1',L("Conduit selon le protocole","Conducted according to the protocol"));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');
+   b.add({t:'move',to:entry(p.segs[2]),nav:true});b.warn(L("ERREUR : « rien ici » vu depuis la piste. Code C sans entrer dans le segment.","ERROR: \"nothing here\" seen from the track. Code C without entering the segment."));
+   b.code(2,'C',null,'bad');b.enter(3).sweep(3).declare(3,'A');
+   b.add({t:'reveal',n:2});b.psuCode('?',L("Code C sans preuve : à reclasser en I","Code C with no evidence: to be reclassified as I"),true);
+   b.say(L("Contre-enquête : 3 maisons cachées par les arbres dans le segment 2. Aucune n'a eu de chance d'être choisie.","Back-check: 3 houses hidden by trees in Segment 2. None had a chance of selection."),'warn');return b.done()}});
+
+// 5 ------------------------------------------------------------------ river E3
+scen({id:'river',title:L("Segment derrière la rivière","Segment across the river"),codes:'E3 · PSU 2',
+ situ:L("Les maisons du segment 2 sont sur l'autre rive. Pas de pirogue aujourd'hui.","Segment 2's houses are on the far bank. No canoe today."),
+ cfg:{seed:51,counts:{1:8,2:6,3:10},terrain:{2:'river'},out:{1:['N','C','N','N','C','V','N','C'],3:['N','C','N','C','Y','C','N','N','C','N']}},
+ rules:{correct:[L("Pas de traversée à la nage ou sans gilet.","No swimming across, no crossing without life jackets."),
+   L("Appel au superviseur ; code E3, barrière temporaire (DU1).","Call the supervisor; code E3, temporary barrier (DU1)."),
+   L("Une nouvelle tentative est planifiée si une pirogue est trouvée.","Another attempt is planned if a canoe is found.")],
+  wrong:[L("Interroger les maisons de la rive proche (segment 8) en les déclarant segment 2.","Interviewing houses on the near bank (Segment 8) and declaring them Segment 2."),
+   L("Alerte A2 : point hors du segment déclaré.","Alert A2: point outside the declared segment.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);
+   b.add({t:'move',to:bil(p.segs[2].quad,.25,.3),nav:true});b.say(L("La rivière coupe le segment 2. Pas de pirogue.","The river cuts Segment 2. No canoe."),'warn');
+   b.photo();b.call('sup',L("Segment 2 : maisons sur l'autre rive, pas de pirogue.","Segment 2: houses on the far bank, no canoe."));
+   b.reply('sup',L("Ne traversez pas. Code E3, SH1, NL2, DU1. Je cherche une pirogue pour demain. Passez au segment 3.","Do not cross. Code E3, SH1, NL2, DU1. I'll look for a canoe tomorrow. Go to Segment 3."));
+   b.code(2,'E3',L("pas de pirogue · DU1","no canoe · DU1"));b.next(3);b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('2',L("Selon le protocole, un segment inaccessible","According to the protocol, one inaccessible segment"));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');
+   b.add({t:'move',to:bil(p.segs[2].quad,.25,.3),nav:true});
+   b.warn(L("ERREUR : l'enquêteur interroge les maisons de la rive proche, dans le segment 8, et les déclare segment 2.","ERROR: the enumerator interviews houses on the near bank, in Segment 8, and declares them Segment 2."));
+   for(const st of p.segs[8].st.slice(0,4))b.visit(st,'C',null,{wrongseg:true,silent:true});
+   b.code(2,'A',null,'bad');b.add({t:'seg',n:8,state:'bad'});
+   b.say(L("ALERTE A2 : 4 points hors du segment déclaré. Les maisons du segment 2 restent sans fiche ni code.","ALERT A2: 4 points outside the declared segment. Segment 2's houses have no record and no code."),'warn');
+   b.missed([2]);b.psuCode('3',L("Pas selon le protocole","Not according to the protocol"),true);return b.done()}});
+
+// 6 ------------------------------------------------------------------ insecurity F1 / J
+scen({id:'danger',title:L("Insécurité pendant le travail","Insecurity during work"),codes:'J + F1 · PSU 2',
+ situ:L("Une bagarre éclate dans le segment 2 pendant le balayage.","A fight breaks out in Segment 2 during the sweep."),
+ cfg:{seed:61,counts:{1:8,2:10,3:10},terrain:{2:'danger'},out:{1:['N','C','N','N','C','V','N','C'],2:['N','C','N','A','N','N','C','N','N','N'],3:['N','C','N','C','Y','C','N','N','C','N']}},
+ rules:{correct:[L("La sécurité passe avant toute règle : on se retire tout de suite.","Safety overrides every rule: withdraw at once."),
+   L("Code J (segment incomplet) + F1 pour la partie non faite.","Code J (incomplete segment) + F1 for the part not done."),
+   L("Chef d'équipe, superviseur, coordination informés.","Team chief, supervisor and coordination informed.")],
+  wrong:[L("Continuer à interroger dans la tension met l'équipe et les familles en danger.","Carrying on in the tension puts the team and families at risk."),
+   L("C'est un incident critique, à signaler immédiatement.","This is a critical incident, to report at once.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);b.enter(2);
+   const st=p.segs[2].st;for(const x of st.slice(0,4))b.visit(x);b.add({t:'danger',n:2});
+   b.say(L("Tension et bagarre : l'enquêteur se retire immédiatement.","Tension and a fight: the enumerator withdraws at once."),'warn');
+   b.add({t:'move',to:entry(p.segs[3]),nav:true});b.call('chief',L("Incident de sécurité au segment 2. Équipe en sécurité.","Security incident in Segment 2. Team safe."));
+   b.reply('sup',L("Ne retournez pas. Code J + F1 pour la partie non faite. Je préviens la coordination. Continuez au segment 3.","Do not go back. Code J + F1 for the part not done. I'll tell coordination. Carry on in Segment 3."));
+   b.code(2,'J',L("F1 · PT2 · SH1","F1 · PT2 · SH1"));b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('2',L("Selon le protocole, segment partiel documenté","According to the protocol, partial segment documented"));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);b.enter(2);
+   const st=p.segs[2].st;for(const x of st.slice(0,4))b.visit(x);b.add({t:'danger',n:2});
+   b.warn(L("ERREUR : l'enquêteur continue malgré la bagarre pour finir le segment.","ERROR: the enumerator carries on despite the fight, to finish the segment."));
+   for(const x of st.slice(4))b.visit(x);b.code(2,'A',null,'bad');
+   b.say(L("Personne n'a appelé : incident critique non signalé. La sécurité passe avant toute règle de la SOP.","Nobody called: a critical incident was not reported. Safety overrides every rule in the SOP."),'warn');
+   b.psuCode('!',L("Incident non signalé","Incident not reported"),true);return b.done()}});
+
+// 7 ------------------------------------------------------------------ swamp part J + D2
+scen({id:'swamp',title:L("Marais dans une partie du segment","Swamp in part of a segment"),codes:'J + D2 · PSU 2',
+ situ:L("La moitié est du segment 2 est un marais. On voit 3 maisons au-delà.","The east half of Segment 2 is swamp. Three houses are visible beyond it."),
+ cfg:{seed:71,counts:{1:9,2:6,3:10},terrain:{2:'halfswamp'},out:{1:['N','C','N','C','V','N','C','N','N'],2:['N','C','N','Y','C','N'],3:['C','N','C','N','N','C','N','N','N','N']}},
+ rules:{correct:[L("On fait toute la partie accessible.","Work all of the accessible part."),
+   L("Pour le reste : code J + D2, SH1, NL1 (1 à 5 maisons), PT3.","For the rest: code J + D2, SH1, NL1 (1 to 5 dwellings), PT3."),
+   L("Le superviseur valide ; une autre tentative si l'eau baisse.","The supervisor approves; another attempt if the water goes down.")],
+  wrong:[L("Coder « A » un segment incomplet cache les maisons non visitées.","Coding A for an incomplete segment hides the houses not visited.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(2);b.enter(2).sweep(2);
+   b.say(L("Fin de la partie accessible. Trois maisons au-delà du marais.","End of the accessible part. Three houses beyond the swamp."),'warn');b.photo();
+   b.call('sup',L("Segment 2 : partie est = marais, 3 maisons visibles de l'autre côté.","Segment 2: east part is swamp, 3 houses visible beyond it."));
+   b.reply('sup',L("Code J, motif D2, SH1, NL1, PT3, DU1. J'approuve. Passez au segment 3.","Code J, reason D2, SH1, NL1, PT3, DU1. Approved. Go to Segment 3."));
+   b.code(2,'J',L("D2 · SH1 · NL1 · PT3","D2 · SH1 · NL1 · PT3"),'done');b.next(3);b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('2',L("Selon le protocole, partie inaccessible documentée","According to the protocol, inaccessible part documented"));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.enter(2).sweep(2);
+   b.warn(L("ERREUR : segment 2 déclaré « A », comme s'il était complet.","ERROR: Segment 2 declared A, as if it were complete."));b.code(2,'A',null,'bad');
+   b.add({t:'reveal',n:2});b.enter(3).sweep(3).declare(3,'A');b.psuCode('1',L("Déclaré conforme, mais faux","Declared compliant, but wrong"),true);
+   b.say(L("Les 3 maisons au-delà du marais disparaissent des données : personne ne sait qu'elles existent.","The 3 houses beyond the swamp vanish from the data: nobody knows they exist."),'warn');return b.done()}});
+
+// 8 ------------------------------------------------------------------ two enumerators
+scen({id:'two',title:L("Deux enquêteurs dans un PSU","Two enumerators in one PSU"),codes:L('blocs','blocks'),
+ situ:L("Le chef d'équipe envoie deux enquêteurs dans le même PSU.","The team chief sends two enumerators to the same PSU."),
+ cfg:{seed:81,counts:{1:8,2:9,3:7,11:6},out:{1:['N','C','N','V','C','N','R','C'],2:['N','C','N','C','N','A','C','N','N'],3:['N','C','N','Y','N','N','C'],11:['C','N','C','N','N','C']}},
+ rules:{correct:[L("Blocs écrits avant le départ : A = segment 1, B = segment 2.","Blocks written before leaving: A = Segment 1, B = Segment 2."),
+   L("Chacun garde ses segments, par numéro croissant ; aucun chevauchement.","Each keeps to their segments, in ascending order; no overlap."),
+   L("Cible atteinte : chacun finit son segment en cours.","Target reached: each finishes their current segment.")],
+  wrong:[L("Inspiré d'un PSU de la revue des cartes (Kongo Central, juillet 2026) : segments 1 et 2 travaillés à deux, puis saut au segment 17.","Modelled on a PSU from the map review (Kongo Central, July 2026): Segments 1 and 2 worked by both, then a jump to Segment 17."),
+   L("Des maisons restent sans fiche ; les codes ne collent pas.","Houses are left without records; the codes do not fit.")]},
+ correct(p){const b=new Bld(p);b.arrive();b.say(L("Blocs fixés par le chef d'équipe : Enquêteur A = segment 1 (puis 3), Enquêteur B = segment 2 (puis 4).","Blocks set by the team chief: Enumerator A = Segment 1 (then 3), Enumerator B = Segment 2 (then 4)."));
+   b.add({t:'two'});
+   const s1=p.segs[1].st,s2=p.segs[2].st;b.add({t:'move',to:entry(p.segs[1]),nav:true,a:'A'});b.add({t:'seg',n:1,state:'prog'});
+   b.add({t:'move',to:entry(p.segs[2]),nav:true,a:'B'});b.add({t:'seg',n:2,state:'prog'});
+   for(let i=0;i<Math.max(s1.length,s2.length);i++){if(s1[i])b.visit(s1[i],null,'A');if(s2[i])b.visit(s2[i],null,'B')}
+   b.declare(1,'A');b.declare(2,'A');b.revisits([2],'B');
+   b.psuCode('1',L("Conduit selon le protocole","Conducted according to the protocol"));
+   b.say(L("Cible dépassée et segments 1 et 2 épuisés : PSU clôturé, segments 3 et 4 non requis.","Target passed and Segments 1 and 2 exhausted: PSU closed, Segments 3 and 4 not required."),'good');return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.add({t:'two'});
+   b.warn(L("ERREUR : pas de blocs. Les deux enquêteurs entrent ensemble dans le segment 1.","ERROR: no blocks. Both enumerators enter Segment 1 together."));
+   const s1=p.segs[1].st,s2=p.segs[2].st;b.add({t:'move',to:entry(p.segs[1]),nav:true,a:'A'});b.add({t:'move',to:entry(p.segs[1]),nav:true,a:'B'});b.add({t:'seg',n:1,state:'bad'});
+   b.visit(s1[0],null,'A');b.visit(s1[2],null,'B');b.visit(s1[4],null,'A');b.visit(s1[5],null,'B');
+   b.add({t:'move',to:entry(p.segs[2]),nav:true,a:'A'});b.add({t:'seg',n:2,state:'bad'});b.visit(s2[1],null,'A');b.visit(s2[3],null,'A');b.visit(s2[6],null,'A');
+   b.add({t:'move',to:entry(p.segs[11]),nav:true,a:'B'});b.add({t:'seg',n:11,state:'bad'});b.warn(L("ERREUR : B saute au segment 11, le plus proche de la route.","ERROR: B jumps to Segment 11, the nearest to the road."));
+   for(const x of p.segs[11].st.slice(0,4))b.visit(x,null,'B');
+   b.code(1,'A',null,'bad');b.code(2,'A',null,'bad');b.code(11,'A',null,'bad');b.missed([1,2,11]);
+   b.psuCode('3',L("Pas selon le protocole","Not according to the protocol"),true);
+   b.say(L("Comme dans la revue des cartes : segments 1 et 2 non épuisés, saut à un numéro élevé, codes « A » faux.","As in the map review: Segments 1 and 2 not exhausted, jump to a high number, false A codes."),'warn');return b.done()}});
+
+// 9 ------------------------------------------------------------------ exhausted below quota, PSU 6
+scen({id:'below',title:L("Cible non atteinte après tous les segments","Target not reached after every segment"),codes:'A · C1 · PSU 6',
+ situ:L("Un petit PSU de 4 segments, peu d'enfants : seulement 4 entretiens possibles.","A small PSU of 4 segments with few children: only 4 interviews are possible."),
+ cfg:{seed:91,num:[[3,1],[4,2]],x0:150,y0:60,cw:250,rh:220,outside:6,counts:{1:6,2:5,3:4,4:5},
+      out:{1:['N','C','N','V','N','C'],2:['N','N','C','Y','N'],3:['V','N','N','N'],4:['N','C','N','A','N']},sec:{'4:3':['A','A']}},
+ rules:{correct:[L("Tous les segments sont faits ou codés, dans l'ordre.","Every segment is worked or coded, in order."),
+   L("PSU code 6 : épuisé sous la cible. Superviseur et DQM informés.","PSU code 6: exhausted below target. Supervisor and DQM informed."),
+   L("Jamais de travail hors du PSU pour compléter.","Never work outside the PSU to make up numbers.")],
+  wrong:[L("Aller dans le village voisin, hors du PSU, pour trouver 2 enfants de plus.","Going to the next village, outside the PSU, to find 2 more children."),
+   L("Alerte A1 : points hors du PSU ; les entretiens sont rejetés.","Alert A1: points outside the PSU; the interviews are rejected.")]},
+ correct(p){const b=new Bld(p);b.arrive();for(const n of [1,2,3,4]){if(n>1)b.next(n);b.enter(n).sweep(n).declare(n,'A')}
+   b.revisits([4]);b.psuCode('6',L("Épuisé sous la cible (4 entretiens)","Exhausted below target (4 interviews)"));
+   b.call('sup',L("PSU fini : 4 segments faits, 4 entretiens seulement.","PSU done: 4 segments worked, only 4 interviews."));
+   b.reply('sup',L("Code 6. Je préviens le DQM. N'allez pas hors du PSU.","Code 6. I'll tell the DQM. Do not go outside the PSU."));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();for(const n of [1,2,3,4]){if(n>1)b.next(n);b.enter(n).sweep(n).declare(n,'A')}
+   b.warn(L("ERREUR : seulement 4 entretiens. L'équipe va au village voisin, hors du PSU.","ERROR: only 4 interviews. The team goes to the next village, outside the PSU."));
+   for(const st of p.outside.slice(0,3))b.visit(st,'C',null,{outside:true,silent:true});
+   b.psuCode('?',L("Entretiens hors PSU : rejetés","Interviews outside the PSU: rejected"),true);
+   b.say(L("ALERTE A1 : 3 points hors du PSU. Ces entretiens sont rejetés ; le bon code était 6.","ALERT A1: 3 points outside the PSU. These interviews are rejected; the right code was 6."),'warn');return b.done()}});
+
+// 10 ----------------------------------------------------------------- entirely empty PSU, code 5
+scen({id:'emptypsu',title:L("PSU entièrement vide","Entirely empty PSU"),codes:'C1 · PSU 5',
+ situ:L("Le PSU est une forêt sans aucune habitation.","The PSU is forest with no dwelling at all."),
+ cfg:{seed:101,num:[[3,1,5],[6,2,4]],x0:50,y0:40,cw:185,rh:220,terrain:{1:'empty',2:'empty',3:'forest',4:'forest',5:'forest',6:'empty'},counts:{1:0,2:0,3:0,4:0,5:0,6:0},label:'PSU 065'},
+ backup:{seed:102,num:[[2,1,4],[3,5,6]],x0:50,y0:40,cw:185,rh:220,counts:{1:12,2:8},label:'PSU 10065',
+      out:{1:['N','C','N','C','V','N','C','N','C','Y','C','N'],2:['N','C','C','N','N','V','N','C']}},
+ rules:{correct:[L("On vérifie sur le terrain (segments 1 et 2), photos et GPS.","Check on the ground (Segments 1 and 2), photos and GPS."),
+   L("Le superviseur vient vérifier ; la Coordination approuve la réserve.","The supervisor comes to check; Coordination approves the backup."),
+   L("PSU code 5 + C1 ; l'équipe va à la PSU de réserve 10065 et commence par son segment 1.","PSU code 5 + C1; the team goes to backup PSU 10065 and starts with its Segment 1.")],
+  wrong:[L("Choisir soi-même un village voisin à la place.","Choosing a nearby village instead, on one's own."),
+   L("Remplacement non approuvé : les données ne sont pas utilisables.","Unapproved replacement: the data cannot be used.")]},
+ correct(p,P2){const b=new Bld(p);b.arrive();b.say(L("Aucune toiture visible. On vérifie quand même, segment 1 d'abord.","No roof in sight. Check anyway, Segment 1 first."));
+   b.enter(1);b.walk(1);b.photo();b.erec(1);b.code(1,'C1');b.enter(2);b.walk(2);b.photo();b.erec(2);b.code(2,'C1');
+   b.call('sup',L("Segments 1 et 2 vides, le reste est de la forêt. Photos prises.","Segments 1 and 2 empty, the rest is forest. Photos taken."));
+   b.reply('sup',L("Je viens vérifier (SRC2). PSU sans habitation : je demande la réserve à la Coordination.","I'm coming to check (SRC2). PSU with no dwelling: I'll ask Coordination for the backup."));
+   b.call('coord',L("PSU 065 : aucune habitation, vérifiée par le superviseur.","PSU 065: no dwelling, checked by the supervisor."));
+   b.reply('coord',L("Remplacement approuvé (VR2) : PSU de réserve 10065. Code PSU 5 + C1.","Replacement approved (VR2): backup PSU 10065. PSU code 5 + C1."));
+   b.psuCode('5',L("Remplacé par la réserve 10065 (C1, VR2)","Replaced by backup 10065 (C1, VR2)"));
+   b.add({t:'switch'});const b2=new Bld(P2);b2.s=b.s;b2.arrive();b2.enter(1).sweep(1).declare(1,'A');b2.next(2).enter(2).sweep(2).declare(2,'A');
+   b2.psuCode('1',L("PSU 10065 : selon le protocole","PSU 10065: according to the protocol"));return b2.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.warn(L("ERREUR : « il n'y a rien ici ». L'équipe va au village le plus proche, sans appel.","ERROR: \"there is nothing here\". The team goes to the nearest village, without calling."));
+   b.add({t:'outv'});for(let i=0;i<4;i++)b.add({t:'outvisit',i});
+   b.psuCode('?',L("Remplacement non approuvé : données inutilisables","Unapproved replacement: data unusable"),true);
+   b.say(L("Le village choisi n'a pas été tiré au sort : ses ménages faussent l'estimation. Seule la Coordination désigne la réserve.","The chosen village was not drawn at random: its households bias the estimate. Only Coordination assigns the backup."),'warn');return b.done()}});
+
+// 11 ----------------------------------------------------------------- satellite G1
+scen({id:'g1',title:L("Décision sur image satellite","Decision from satellite imagery"),codes:'G1 · PSU 2',
+ situ:L("Avant le départ, l'image satellite ne montre aucun bâtiment dans le segment 2.","Before leaving, the satellite image shows no building in Segment 2."),
+ cfg:{seed:111,counts:{1:9,2:0,3:10},terrain:{2:'g1'},out:{1:['N','C','N','C','V','N','N','C','N'],3:['N','C','N','C','Y','C','N','N','C','N']}},
+ wrongcfg:{seed:112,counts:{1:9,2:0,3:10},terrain:{2:'g1'},out:{1:['N','C','N','C','V','N','N','C','N'],3:['N','C','N','C','Y','C','N','N','C','N']}},
+ rules:{correct:[L("G est décidé avant le terrain, sur image, par le superviseur et le DQM.","G is decided before fieldwork, from imagery, by the supervisor and DQM."),
+   L("G1 : aucun bâtiment visible. L'équipe ne s'y rend pas.","G1: no building visible. The team does not go there.")],
+  wrong:[L("L'enquêteur ne peut pas coder G sur le terrain pour éviter une longue marche.","The enumerator cannot code G in the field to avoid a long walk."),
+   L("Segment 3 a des maisons : code G sans visa = faux.","Segment 3 has houses: code G without approval = wrong.")]},
+ pre(b){b.code(2,'G1',L("décidé avant le terrain","decided before fieldwork"))},
+ correct(p){const b=new Bld(p);b.say(L("Fiche de terrain : segment 2 déjà codé G1 par le superviseur et le DQM (image satellite).","Assignment sheet: Segment 2 already coded G1 by the supervisor and DQM (satellite image)."));
+   b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(3);b.enter(3).sweep(3).declare(3,'A');
+   b.psuCode('2',L("Selon le protocole, segment 2 G1 approuvé","According to the protocol, Segment 2 G1 approved"));return b.done()},
+ wrong(p){const b=new Bld(p);b.arrive();b.enter(1).sweep(1).declare(1,'A');b.next(3);b.add({t:'move',to:entry(p.segs[3]),nav:true});
+   b.warn(L("ERREUR : le segment 3 est loin ; l'enquêteur le code « G » lui-même et rentre.","ERROR: Segment 3 is far; the enumerator codes it G himself and goes home."));
+   b.code(3,'G',null,'bad');b.missed([3]);b.psuCode('?',L("Code G sans visa ; PSU incomplet","Code G without approval; PSU incomplete"),true);
+   b.say(L("Le segment 3 avait 10 maisons. G est une décision sur image, jamais une excuse de terrain.","Segment 3 had 10 houses. G is a decision from imagery, never a field excuse."),'warn');return b.done()}});
+
+// ===================================================================== drawing
 const NS='http://www.w3.org/2000/svg', svg=document.getElementById('map');
 function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||svg).appendChild(e);return e}
-const COL={C:'var(--ok)',Y:'var(--young)',N:'var(--noel)',A:'var(--abs)',A2:'#b06a1c',R:'var(--ref)',V:'#ffffff',U:'#ffffff'};
-const SEGF={idle:'var(--idle)',prog:'var(--prog)',done:'var(--done)',bad:'var(--skip)'};
-let gSeg,gLab,gTrail,gSt,gMan,gMiss;
-function housePath(x,y,k){k=k||1;return`M${x-7*k} ${y+6*k}L${x-7*k} ${y-1*k}L${x} ${y-8*k}L${x+7*k} ${y-1*k}L${x+7*k} ${y+6*k}Z`}
-function drawBase(){
-  svg.innerHTML='';
-  const defs=el('defs',{});
-  const pat=el('pattern',{id:'trees',width:22,height:22,patternUnits:'userSpaceOnUse'},defs);
-  el('rect',{width:22,height:22,fill:'#dcebd6'},pat);
-  el('path',{d:'M11 3 L17 14 L5 14 Z',fill:'#7fae73'},pat);
-  el('rect',{x:10,y:14,width:2,height:4,fill:'#6b5a3e'},pat);
-  const mk=el('marker',{id:'arr',viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},defs);
-  el('path',{d:'M0 0L10 5L0 10z',fill:'#1d4a85'},mk);
-  gSeg=el('g',{});gLab=el('g',{});gTrail=el('g',{});gSt=el('g',{});gMiss=el('g',{});gMan=el('g',{});
-  for(const k in segs){const s=segs[k];
-    s.poly=el('polygon',{points:s.quad.map(p=>p.x+','+p.y).join(' '),fill:s.st.length?SEGF.idle:'url(#trees)',stroke:'#7d8b99','stroke-width':1.6},gSeg);
+const COL={C:'#2e8b57',Y:'#5fb3a8',N:'#8fa3b8',A:'#e8902a',A2:'#a8641c',R:'#c83b3b',V:'#ffffff',U:'#ffffff'};
+const SEGF={idle:'#eef1f5',prog:'#fff3c4',done:'#e3f3e8',bad:'#f6dede',coded:'#e6ecf5'};
+const housePath=(x,y,k)=>{k=k||1;return`M${x-7*k} ${y+6*k}L${x-7*k} ${y-1*k}L${x} ${y-8*k}L${x+7*k} ${y-1*k}L${x+7*k} ${y+6*k}Z`};
+let G={},PSU=null,AG={};
+function defs(){const d=el('defs',{});
+  const pat=(id,w,bg,draw)=>{const p=el('pattern',{id,width:w,height:w,patternUnits:'userSpaceOnUse'},d);el('rect',{width:w,height:w,fill:bg},p);draw(p)};
+  pat('trees',22,'#dcebd6',p=>{el('path',{d:'M11 3 L17 14 L5 14 Z',fill:'#7fae73'},p);el('rect',{x:10,y:14,width:2,height:4,fill:'#6b5a3e'},p)});
+  pat('bare',18,'#f3ecd9',p=>{el('circle',{cx:4,cy:5,r:1.2,fill:'#c9b98f'},p);el('circle',{cx:13,cy:12,r:1,fill:'#c9b98f'},p)});
+  pat('water',24,'rgba(110,170,220,.55)',p=>{el('path',{d:'M0 8 q6 -5 12 0 t12 0 M0 18 q6 -5 12 0 t12 0',stroke:'#fff',fill:'none','stroke-width':1.4},p)});
+  pat('reeds',16,'rgba(150,190,150,.75)',p=>{el('path',{d:'M3 14 L4 5 M8 14 L8 3 M13 14 L12 6',stroke:'#4f7d4c','stroke-width':1.2},p)});
+  pat('danger',14,'rgba(200,59,59,.10)',p=>{el('path',{d:'M0 14 L14 0',stroke:'rgba(200,59,59,.55)','stroke-width':2},p)});
+  pat('sat',12,'#e5e7eb',p=>{el('path',{d:'M0 0 L12 12 M12 0 L0 12',stroke:'#9ca3af','stroke-width':.8},p)});
+  const mk=(id,c)=>{const m=el('marker',{id,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},d);el('path',{d:'M0 0L10 5L0 10z',fill:c},m)};
+  mk('arr','#1d4a85');mk('arrB','#7b3fa0');
+}
+function drawPSU(p){
+  svg.innerHTML='';defs();PSU=p;
+  G={seg:el('g',{}),ter:el('g',{}),lab:el('g',{}),trail:el('g',{}),st:el('g',{}),mark:el('g',{}),fx:el('g',{}),man:el('g',{}),ui:el('g',{})};
+  if(p.outside.length){const xs=p.outside.map(o=>o.x),ys=p.outside.map(o=>o.y);
+    el('rect',{x:Math.min(...xs)-26,y:Math.min(...ys)-30,width:Math.max(...xs)-Math.min(...xs)+52,height:Math.max(...ys)-Math.min(...ys)+56,rx:10,fill:'#eceae4',stroke:'#b9b4a8','stroke-dasharray':'5 4'},G.seg);
+    const t=el('text',{x:Math.min(...xs)-20,y:Math.min(...ys)-36,'font-size':12,fill:'#6b665c','font-weight':600},G.seg);t.textContent=tx(UI.outside);}
+  for(const k in p.segs){const s=p.segs[k],t=s.ter;
+    const fill=t==='forest'?'url(#trees)':t==='empty'?'url(#bare)':t==='g1'?'url(#sat)':SEGF.idle;
+    s.poly=el('polygon',{points:s.quad.map(q=>q.x+','+q.y).join(' '),fill,stroke:'#7d8b99','stroke-width':1.6},G.seg);s.base=fill;
+    if(t==='flood')el('polygon',{points:s.quad.map(q=>q.x+','+q.y).join(' '),fill:'url(#water)'},G.ter);
+    if(t==='river'){const pts=[];for(let u=0;u<=1.001;u+=.1){const m=.3+.3*u;pts.push(bil(s.quad,u,m-.07))}for(let u=1;u>=-.001;u-=.1){const m=.3+.3*u;pts.push(bil(s.quad,u,m+.09))}
+      el('polygon',{points:pts.map(q=>q.x+','+q.y).join(' '),fill:'#8fc3ea'},G.ter);}
+    if(t==='halfswamp'){const pts=[bil(s.quad,.56,0),bil(s.quad,1,0),bil(s.quad,1,1),bil(s.quad,.56,1)];el('polygon',{points:pts.map(q=>q.x+','+q.y).join(' '),fill:'url(#reeds)'},G.ter);}
+    if(t==='danger'){s.dz=el('polygon',{points:s.quad.map(q=>q.x+','+q.y).join(' '),fill:'url(#danger)',opacity:0},G.ter);}
     const c=centre(s);
-    s.labelC=el('circle',{cx:c.x,cy:c.y,r:17,fill:'#fff',stroke:'#12305a','stroke-width':2,opacity:.92},gLab);
-    s.labelT=el('text',{x:c.x,y:c.y+6,'text-anchor':'middle','font-size':18,'font-weight':700,fill:'#12305a'},gLab);s.labelT.textContent=s.n;
-    if(!s.st.length){const f=el('text',{x:c.x,y:c.y+36,'text-anchor':'middle','font-size':13,'font-weight':600,fill:'#3d6b34'},gLab);f.textContent=T[lang].forest;}
-    s.codeT=el('text',{x:c.x+22,y:c.y-12,'font-size':16,'font-weight':800,fill:'#12305a'},gLab);
+    el('circle',{cx:c.x,cy:c.y,r:16,fill:'#fff',stroke:'#12305a','stroke-width':2,opacity:.93},G.lab);
+    const lt=el('text',{x:c.x,y:c.y+6,'text-anchor':'middle','font-size':17,'font-weight':700,fill:'#12305a'},G.lab);lt.textContent=s.n;
+    const sub={forest:L('Forêt','Forest'),empty:L('Terrain vide','Bare land'),g1:L('Image : vide','Image: empty'),flood:L('Inondé','Flooded'),river:L('Rivière','River'),halfswamp:L('Marais','Swamp')}[t];
+    if(sub){const st_=el('text',{x:c.x,y:c.y+33,'text-anchor':'middle','font-size':12,'font-weight':600,fill:t==='flood'||t==='river'?'#1d5c8f':'#4a5a3f'},G.lab);st_.textContent=tx(sub)}
+    s.codeT=el('text',{x:c.x+20,y:c.y-12,'font-size':15,'font-weight':800,fill:'#12305a'},G.lab);
   }
-  el('polygon',{points:[...P[0],...P.map(r=>r[COLS]).slice(1),...[...P[ROWS]].reverse().slice(1),...P.map(r=>r[0]).reverse().slice(1)].map(p=>p.x+','+p.y).join(' '),fill:'none',stroke:'#12305a','stroke-width':4},gSeg);
-  for(const st of all){st.g=el('path',{d:housePath(st.x,st.y),fill:'#fff',stroke:'#4a5663','stroke-width':1.4},gSt);}
-  // centroid
-  el('circle',{cx:CENT.x,cy:CENT.y,r:5,fill:'#12305a'},gLab);
-  const ct=el('text',{x:CENT.x-62,y:CENT.y+4,'font-size':11,fill:'#12305a'},gLab);ct.textContent=lang==='fr'?'centroïde':'centroid';
-  // enumerator
-  gMan.innerHTML='';
-  el('circle',{cx:0,cy:-14,r:5.5,fill:'#12305a'},gMan);
-  el('path',{d:'M-7 6 L-6 -6 Q0 -10 6 -6 L7 6 Z',fill:'#c9a463',stroke:'#12305a','stroke-width':1.2},gMan);
-  el('rect',{x:4,y:-4,width:7,height:10,rx:1.5,fill:'#12305a'},gMan);
-  gMan.setAttribute('transform',`translate(${CENT.x},${CENT.y-40})`);
+  el('polygon',{points:p.ring.map(q=>q.x+','+q.y).join(' '),fill:'none',stroke:'#12305a','stroke-width':4},G.seg);
+  if(p.label){const t=el('text',{x:p.ring[0].x,y:p.ring[0].y-8,'font-size':14,'font-weight':700,fill:'#12305a'},G.lab);t.textContent=p.label}
+  for(const st of p.all){st.g=el('path',{d:housePath(st.x,st.y),fill:'#fff',stroke:'#4a5663','stroke-width':1.4,opacity:st.flag==='hidden'?0:(st.flag==='beyond'?.75:1)},G.st)}
+  for(const st of p.outside){st.g=el('path',{d:housePath(st.x,st.y),fill:'#fff',stroke:'#4a5663','stroke-width':1.4},G.st)}
+  el('circle',{cx:p.cent.x,cy:p.cent.y,r:4.5,fill:'#12305a'},G.lab);
+  const ct=el('text',{x:p.cent.x+7,y:p.cent.y+15,'font-size':11,fill:'#12305a'},G.lab);ct.textContent=tx(UI.centroid);
+  AG={};agent('E');
 }
-// ---------------------------------------------------------------- state & player
-let lang='fr', mode='correct', steps=[], idx=0, timer=null, playing=false;
-let pos={x:CENT.x,y:CENT.y-40}, cnt={rec:0,int:0,abs:0}, segInfo={}, trail=null, quotaShown=false;
+function agent(id){
+  const col=id==='B'?'#7b3fa0':'#12305a';const g=el('g',{},G.man);
+  el('circle',{cx:0,cy:-14,r:5.5,fill:col},g);el('path',{d:'M-7 6 L-6 -6 Q0 -10 6 -6 L7 6 Z',fill:id==='B'?'#d7bde6':'#c9a463',stroke:col,'stroke-width':1.2},g);
+  el('rect',{x:4,y:-4,width:7,height:10,rx:1.5,fill:col},g);
+  if(id==='A'||id==='B'){const t=el('text',{x:-15,y:-14,'font-size':12,'font-weight':800,fill:col},g);t.textContent=id}
+  const a={id,g,col,pos:{x:PSU.cent.x,y:PSU.cent.y-40},trail:null};g.setAttribute('transform',`translate(${a.pos.x},${a.pos.y})`);AG[id]=a;return a;
+}
+function ag(id){if(!id)id=AG.A?'A':'E';return AG[id]||agent(id)}
+
+// ===================================================================== state & player
+let cur=SC[0], variant='correct', steps=[], idx=0, timer=null, playing=false;
+let cnt={rec:0,int:0,abs:0,rev:0}, segInfo={}, psuState=null, P1=null, P2=null;
+function build(){
+  const cfg=(variant==='wrong'&&cur.wrongcfg)?cur.wrongcfg:cur.cfg;
+  P1=makePSU(cfg);P2=cur.backup?makePSU(cur.backup):null;
+  return cur[variant](P1,P2);
+}
 function reset(){
-  stop(); drawBase(); steps=build(mode); idx=0; pos={x:CENT.x,y:CENT.y-40};
-  cnt={rec:0,int:0,abs:0}; segInfo={}; trail=null; quotaShown=false;
-  for(const st of all){st.o=null;}
-  document.getElementById('log').innerHTML=''; document.getElementById('dispnote').textContent='';
-  setBanner(T[lang].start,''); updCounters(); updDisp();
+  stop();steps=build();drawPSU(P1);idx=0;cnt={rec:0,int:0,abs:0,rev:0};segInfo={};psuState=null;
+  document.getElementById('log').innerHTML='';setBanner(tx(UI.start),'');
+  if(cur.pre){const b=new Bld(P1);cur.pre(b);for(const s of b.s)run(s,true,()=>{})}
+  updCounters();updDisp();renderSitu();
 }
-function setBanner(txt,cls){const b=document.getElementById('banner');b.textContent=txt;b.className='banner '+(cls||'')}
-function log(txt,cls){const li=document.createElement('li');li.textContent=txt;if(cls)li.className=cls;const ul=document.getElementById('log');ul.prepend(li)}
-function txt(k,a,b){const v=T[lang][k];return typeof v==='function'?v(a,b):v}
-function updCounters(){
-  document.getElementById('c_rec').textContent=cnt.rec;
-  document.getElementById('c_int').textContent=cnt.int;
-  document.getElementById('c_abs').textContent=cnt.abs;
-  document.getElementById('qbar').style.width=Math.min(100,cnt.int/5*100)+'%';
-}
-function updDisp(){
-  const tb=document.getElementById('disp');tb.innerHTML='';
-  Object.keys(segInfo).map(Number).sort((a,b)=>a-b).forEach(n=>{const d=segInfo[n];
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${n}</td><td class="code ${d.bad?'bad':''}">${d.code||'…'}</td><td>${d.rec}</td><td>${d.int}</td>`;tb.appendChild(tr)});
-}
-function setSeg(n,state,code){
-  const s=segs[n]; s.poly.setAttribute('fill',s.st.length?SEGF[state]:'url(#trees)');
-  segInfo[n]=segInfo[n]||{rec:0,int:0,code:''};
-  if(state==='bad')segInfo[n].bad=true;
-  if(code){
-    if(code==='auto'){const d=segInfo[n];code=!s.st.length?'D':(d.int+d.young>0?'B':'C');if(!s.st.length){d.rec=0}}
-    segInfo[n].code=code; s.codeT.textContent=code==='?'?'':code;
-    s.codeT.setAttribute('fill',segInfo[n].bad?'#c83b3b':'#12305a');
-  }
-  updDisp();
-}
-function visit(st,o,second){
-  const prev=st.o; st.o=o; st.g.setAttribute('fill',COL[o]); st.g.setAttribute('stroke',o==='V'?'#4a5663':'#2b3640');
-  if(o==='V'){st.g.setAttribute('stroke-dasharray','3 2')}
-  const d=segInfo[st.seg]=segInfo[st.seg]||{rec:0,int:0,young:0,code:''};
-  d.young=d.young||0;
-  if(!second){cnt.rec++;d.rec++;}
-  if(o==='A')cnt.abs++;
-  if(second&&prev==='A')cnt.abs--;
-  if(o==='C'){cnt.int++;d.int++;}
-  if(o==='Y')d.young++;
-  if(second){st.g.setAttribute('stroke-width',3)}
-  updCounters();updDisp();
-  if(!quotaShown&&cnt.int>=5&&mode!=='errors'){quotaShown=true;setBanner(txt('quota'),'warn');log(txt('quota'),'good');}
-}
-function moveTo(to,nav,dur,done){
-  const from={...pos}, target={x:to.x,y:to.y-14};
-  if(nav==='skip'){const t0=performance.now();const fin=()=>{pos=target;gMan.setAttribute('transform',`translate(${pos.x},${pos.y})`);trail=null;done()};
-    if(dur<=0)return fin();
-    const g=now=>{const k=Math.min(1,(now-t0)/dur);pos={x:from.x+(target.x-from.x)*k,y:from.y+(target.y-from.y)*k};gMan.setAttribute('transform',`translate(${pos.x},${pos.y})`);if(k<1)requestAnimationFrame(g);else fin()};requestAnimationFrame(g);return}
-  if(!trail||nav){trail=el('polyline',{points:'',fill:'none',stroke:nav?'#1d4a85':'#12305a','stroke-width':nav?2:1.6,'stroke-dasharray':nav?'7 5':'none',opacity:.75,'marker-end':nav?'url(#arr)':''},gTrail);trail._pts=[`${from.x},${from.y+14}`];}
-  const t0=performance.now();
-  function f(now){const k=Math.min(1,(now-t0)/dur);pos={x:from.x+(target.x-from.x)*k,y:from.y+(target.y-from.y)*k};
-    gMan.setAttribute('transform',`translate(${pos.x},${pos.y})`);
-    if(k<1)requestAnimationFrame(f);else{trail._pts.push(`${to.x},${to.y}`);trail.setAttribute('points',trail._pts.join(' '));if(nav)trail=null;done()}}
-  if(dur<=0){pos=target;gMan.setAttribute('transform',`translate(${pos.x},${pos.y})`);trail._pts.push(`${to.x},${to.y}`);trail.setAttribute('points',trail._pts.join(' '));if(nav)trail=null;done();return}
-  requestAnimationFrame(f);
-}
-function speedMs(fast){const v=+document.getElementById('speed').value;const base=1300-v*115;return fast?base*.35:base}
-function run(i,instant,cb){
-  const s=steps[i]; if(!s){cb&&cb(true);return}
-  const d=instant?0:speedMs(s.fast);
+function setBanner(t,cls){const b=document.getElementById('banner');b.textContent=t;b.className='banner '+(cls||'')}
+function log(t,cls){const li=document.createElement('li');li.textContent=t;if(cls)li.className=cls;document.getElementById('log').prepend(li)}
+function updCounters(){for(const k of ['rec','int','abs','rev'])document.getElementById('c_'+k).textContent=cnt[k];
+  document.getElementById('qbar').style.width=Math.min(100,cnt.int/TARGET*100)+'%'}
+function updDisp(){const tb=document.getElementById('dispb');tb.innerHTML='';
+  Object.keys(segInfo).map(Number).sort((a,b)=>a-b).forEach(n=>{const d=segInfo[n];const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${n}</td><td class="code ${d.bad?'bad':''}">${d.code||'…'}${d.sub?`<div style="font-weight:400;font-size:10.5px;color:#5b6876">${tx(d.sub)}</div>`:''}</td><td>${d.rec}</td><td>${d.int}</td>`;tb.appendChild(tr)});
+  const pl=document.getElementById('psuline');
+  if(psuState){pl.textContent=`${tx(UI.psu)} ${psuState.code}${lang==='fr'?' : ':': '}${tx(psuState.m)}`;pl.className=psuState.bad?'bad':''}else{pl.textContent='';pl.className=''}}
+function setSeg(n,state,code,sub){const s=PSU.segs[n];if(!s)return;
+  const t=s.ter;const keep=t==='forest'||t==='empty'||t==='g1';
+  s.poly.setAttribute('fill',keep&&state!=='bad'?s.base:SEGF[state]||SEGF.idle);if(keep&&state==='bad')s.poly.setAttribute('fill',SEGF.bad);
+  const d=segInfo[n]=segInfo[n]||{rec:0,int:0,code:''};if(state==='bad')d.bad=true;
+  if(code){d.code=code;s.codeT.textContent=code==='?'?'?':code;s.codeT.setAttribute('fill',d.bad?'#c83b3b':'#12305a')}
+  if(sub)d.sub=sub;updDisp()}
+function visitHouse(st,o,s){
+  const prev=st.o;st.o=o;st.g.setAttribute('opacity',1);st.g.setAttribute('fill',COL[o]||'#fff');st.g.setAttribute('stroke',o==='V'?'#4a5663':'#2b3640');
+  if(o==='V')st.g.setAttribute('stroke-dasharray','3 2');
+  const d=segInfo[st.seg]=segInfo[st.seg]||{rec:0,int:0,code:''};
+  if(!s.out){cnt.rec++;if(st.seg&&!s.wrongseg)d.rec++}
+  if(s.rev){cnt.rev++;if(prev==='A'&&o!=='A')cnt.abs--}else if(o==='A')cnt.abs++;
+  if(o==='C'&&!s.outside){cnt.int++;if(!s.wrongseg)d.int++}
+  if(s.outside){el('circle',{cx:st.x,cy:st.y,r:13,fill:'none',stroke:'#d62828','stroke-width':3},G.mark)}
+  if(s.wrongseg){el('circle',{cx:st.x,cy:st.y,r:13,fill:'none',stroke:'#d62828','stroke-width':3,'stroke-dasharray':'4 3'},G.mark);const dd=segInfo[2]=segInfo[2]||{rec:0,int:0,code:''};dd.rec++;dd.int++}
+  if(s.rev)st.g.setAttribute('stroke-width',3);
+  updCounters();updDisp()}
+function moveAg(a,to,mode,dur,done){
+  const from={...a.pos},target={x:to.x,y:to.y-14};
+  const put=p=>{a.pos=p;a.g.setAttribute('transform',`translate(${p.x},${p.y})`)};
+  if(mode==='notrail'||mode==='jump'){a.trail=null;if(dur<=0||mode==='jump'){put(target);return done()}
+    const t0=performance.now();const f=now=>{const k=Math.min(1,(now-t0)/dur);put({x:from.x+(target.x-from.x)*k,y:from.y+(target.y-from.y)*k});if(k<1)requestAnimationFrame(f);else done()};return requestAnimationFrame(f)}
+  const nav=mode==='nav';
+  if(!a.trail||nav){a.trail=el('polyline',{points:'',fill:'none',stroke:a.id==='B'?'#7b3fa0':(nav?'#1d4a85':'#12305a'),'stroke-width':nav?2:1.6,'stroke-dasharray':nav?'7 5':'none',opacity:.75,'marker-end':nav?(a.id==='B'?'url(#arrB)':'url(#arr)'):''},G.trail);a.trail._p=[`${from.x},${from.y+14}`]}
+  const tr=a.trail;const fin=()=>{tr._p.push(`${to.x},${to.y}`);tr.setAttribute('points',tr._p.join(' '));if(nav)a.trail=null;done()};
+  if(dur<=0){put(target);return fin()}
+  const t0=performance.now();const f=now=>{const k=Math.min(1,(now-t0)/dur);put({x:from.x+(target.x-from.x)*k,y:from.y+(target.y-from.y)*k});if(k<1)requestAnimationFrame(f);else fin()};requestAnimationFrame(f)}
+function badge(who){
+  const vb=svg.viewBox.baseVal;const x=vb.width-150,y=who==='coord'?78:16;
+  const key='b_'+who;if(G[key])return G[key];
+  const g=el('g',{},G.ui);el('rect',{x,y,width:140,height:52,rx:8,fill:'#fff',stroke:who==='coord'?'#6b4fa0':'#1d4a85','stroke-width':2},g);
+  el('circle',{cx:x+22,cy:y+19,r:7,fill:who==='coord'?'#6b4fa0':'#1d4a85'},g);el('path',{d:`M${x+12} ${y+43} q10 -16 20 0`,fill:who==='coord'?'#6b4fa0':'#1d4a85'},g);
+  const t=el('text',{x:x+40,y:y+31,'font-size':13,'font-weight':700,fill:'#12305a'},g);t.textContent=tx(who==='coord'?UI.coord:who==='chief'?UI.chief:UI.sup);
+  G[key]={x:x+70,y:y+52,g};return G[key]}
+function bubble(x,y,text,col){
+  G.fx.innerHTML='';const w=Math.min(300,Math.max(140,text.length*5.6)),lines=[];let line='';
+  for(const word of text.split(' ')){if((line+' '+word).length*5.9>w-16){lines.push(line);line=word}else line=line?line+' '+word:word}lines.push(line);
+  const h=lines.length*15+12;const bx=Math.max(4,Math.min(x-w/2,svg.viewBox.baseVal.width-w-4)),by=Math.max(4,y);
+  el('rect',{x:bx,y:by,width:w,height:h,rx:7,fill:'#fff',stroke:col,'stroke-width':2},G.fx);
+  lines.forEach((l,i)=>{const t=el('text',{x:bx+8,y:by+17+i*15,'font-size':12,fill:'#1f2933'},G.fx);t.textContent=l});}
+function speedMs(){const v=+document.getElementById('speed').value;return 1150-v*100}
+function run(s,instant,cb){
+  const d=instant?0:speedMs();
   switch(s.t){
-    case 'banner':{const m=txt(s.k,s.a,s.b);setBanner(m,s.cls);log(m,s.cls==='good'?'good':'');return cb(false,instant?0:Math.max(d*1.6,s.fast?250:900))}
-    case 'note':{document.getElementById('dispnote').textContent=txt(s.k);return cb(false,0)}
-    case 'alert':{const m=txt(s.k,s.a);setBanner(m,'warn');log(m,'alert');return cb(false,instant?0:d*2.2)}
-    case 'seg':{setSeg(s.n,s.state,s.code);return cb(false,instant?0:d*.3)}
-    case 'move':{if(s.notrail){return moveTo(s.to,'skip',d*.8,()=>cb(false,0))}return moveTo(s.to,s.nav||s.jump,s.jump?0:(s.nav?d*1.2:d*.6),()=>cb(false,0))}
-    case 'recode':{for(const k in segs){const sg=segs[k],dd=segInfo[k];if(!dd)continue;const c=!sg.st.length?'D':((dd.int+(dd.young||0))>0?'B':'C');dd.code=c;sg.codeT.textContent=c}updDisp();return cb(false,0)}
-    case 'visit':{visit(s.st,s.o,s.second);return cb(false,instant?0:d*.45)}
-    case 'quitAtQuota':{ // insert visits until quota reached, then leave
-      const seg=segs[s.seg];const extra=[];let q=cnt.int,left=0;
-      for(const st of seg.st){if(q>=5){left++;continue}extra.push({t:'move',to:st},{t:'visit',st,o:st.base});if(st.base==='C')q++;}
-      extra.push({t:'alert',k:'e_quit',a:seg.st.length-extra.length/2});
-      steps.splice(i+1,0,...extra);return cb(false,0)}
-    case 'missed':{for(const n of [1,8]){for(const st of segs[n].st)if(!st.o){el('circle',{cx:st.x,cy:st.y,r:13,fill:'none',stroke:'var(--miss)','stroke-width':3},gMiss)}}
-      for(const n of [2,3,4,5,6,7]){if(segs[n].st.length){segs[n].poly.setAttribute('fill','var(--skip)');segs[n].codeT.textContent='?';segs[n].codeT.setAttribute('fill','#c83b3b')}}
-      return cb(false,instant?0:d)}
+    case 'banner':{G.fx.innerHTML='';const m=tx(s.m);setBanner(m,s.cls);log(m,s.cls==='good'?'good':(s.cls==='warn'?'alert':''));return cb(instant?0:Math.max(d*1.7,900))}
+    case 'alert':{const m=tx(s.m);setBanner(m,'warn');log(m,'alert');return cb(instant?0:d*2.4)}
+    case 'log':{log(tx(s.m),'');return cb(instant?0:d*.6)}
+    case 'quota':{const m=tx(L(`Cible de ${TARGET} atteinte. On finit quand même le segment en cours (règle 5.1).`,`Target of ${TARGET} reached. The current segment is still finished (Rule 5.1).`));setBanner(m,'warn');log(m,'good');return cb(instant?0:d*1.6)}
+    case 'seg':{setSeg(s.n,s.state,s.code,s.sub);return cb(instant?0:d*.3)}
+    case 'move':{const a=ag(s.a);const mode=s.jump?'jump':s.notrail?'notrail':s.nav?'nav':'';return moveAg(a,s.to,mode,s.nav?d*1.2:d*.55,()=>cb(0))}
+    case 'visit':{visitHouse(s.st,s.o,s);return cb(instant?0:d*.45)}
+    case 'call':{const a=ag(s.a);const b=badge(s.who);G.fx.innerHTML='';
+      const ln=el('line',{x1:a.pos.x,y1:a.pos.y-10,x2:b.x,y2:b.y,stroke:'#1d4a85','stroke-width':2,'stroke-dasharray':'5 4'},G.ui);G.lastLine=ln;
+      bubble(a.pos.x,a.pos.y+16,'☎ '+tx(s.m),'#1d4a85');log('☎ '+tx(s.m),'');return cb(instant?0:d*2.6)}
+    case 'reply':{if(G.lastLine){G.lastLine.remove();G.lastLine=null}const b=badge(s.who);bubble(b.x-60,b.y+8,'✓ '+tx(s.m),'#2e8b57');log('✓ '+tx(s.m),'good');setBanner(tx(s.m),'good');
+      return cb(instant?0:d*3.2)}
+    case 'photo':{const a=ag(s.a);const c=el('circle',{cx:a.pos.x,cy:a.pos.y+4,r:4,fill:'none',stroke:'#f5c400','stroke-width':3},G.fx);
+      el('rect',{x:a.pos.x+8,y:a.pos.y-2,width:14,height:10,rx:2,fill:'#12305a'},G.mark);el('circle',{cx:a.pos.x+15,cy:a.pos.y+3,r:2.5,fill:'#fff'},G.mark);
+      if(!instant){let r=4;const iv=setInterval(()=>{r+=4;c.setAttribute('r',r);c.setAttribute('opacity',Math.max(0,1-r/40));if(r>40){clearInterval(iv);c.remove()}},30)}else c.remove();
+      log(tx(L("Photo géolocalisée prise (PH1).","Geotagged photo taken (PH1).")),'');return cb(instant?0:d*.8)}
+    case 'erec':{const p=s.at;const g=el('g',{},G.mark);el('path',{d:`M${p.x} ${p.y} l-7 -13 a8 8 0 1 1 14 0 z`,fill:'#1d4a85'},g);el('circle',{cx:p.x,cy:p.y-17,r:3,fill:'#fff'},g);
+      cnt.rec++;const dd=segInfo[s.n]=segInfo[s.n]||{rec:0,int:0,code:''};dd.rec++;updCounters();updDisp();
+      log(tx(L(`Segment ${s.n} : fiche « zone vide » avec GPS soumise.`,`Segment ${s.n}: "empty area" record with GPS submitted.`)),'good');return cb(instant?0:d*.8)}
+    case 'psu':{psuState={code:s.code,m:s.m,bad:s.bad};updDisp();return cb(instant?0:d*.5)}
+    case 'missed':{for(const n of s.ns){const sg=PSU.segs[n];if(!sg)continue;for(const st of sg.st)if(!st.o)el('circle',{cx:st.x,cy:st.y,r:13,fill:'none',stroke:'#d62828','stroke-width':3},G.mark)}
+      return cb(instant?0:d)}
+    case 'reveal':{const sg=PSU.segs[s.n];for(const st of sg.hid){st.g.setAttribute('opacity',1);el('circle',{cx:st.x,cy:st.y,r:13,fill:'none',stroke:'#d62828','stroke-width':3},G.mark)}
+      return cb(instant?0:d*1.2)}
+    case 'danger':{const sg=PSU.segs[s.n];if(sg.dz)sg.dz.setAttribute('opacity',1);
+      const c=centre(sg);const g=el('g',{},G.mark);el('path',{d:`M${c.x+40} ${c.y-34} l13 24 h-26 z`,fill:'#c83b3b'},g);const t=el('text',{x:c.x+40,y:c.y-14,'text-anchor':'middle','font-size':14,'font-weight':800,fill:'#fff'},g);t.textContent='!';
+      return cb(instant?0:d)}
+    case 'two':{ag('A');ag('B');AG.E&&AG.E.g.remove();delete AG.E;return cb(0)}
+    case 'switch':{drawPSU(P2);segInfo={};psuState=null;updDisp();
+      log(tx(L("Navigation vers la PSU de réserve 10065. On recommence au segment 1.","Navigating to backup PSU 10065. Start again at Segment 1.")),'good');return cb(instant?0:d*1.5)}
+    case 'outv':{// a village outside the drawn PSU
+      const vb=svg.viewBox.baseVal;const ox=vb.width-120,oy=330;G.ov=[];
+      el('rect',{x:ox-40,y:oy-40,width:150,height:170,rx:10,fill:'#eceae4',stroke:'#b9b4a8','stroke-dasharray':'5 4'},G.seg);
+      const t=el('text',{x:ox-34,y:oy-46,'font-size':12,'font-weight':600,fill:'#6b665c'},G.seg);t.textContent=tx(L('Village voisin (hors PSU)','Nearby village (outside PSU)'));
+      for(let i=0;i<4;i++){const st={x:ox+(i%2)*50,y:oy+Math.floor(i/2)*55,seg:0};st.g=el('path',{d:housePath(st.x,st.y),fill:'#fff',stroke:'#4a5663','stroke-width':1.4},G.st);G.ov.push(st)}
+      return cb(instant?0:d)}
+    case 'outvisit':{const st=G.ov[s.i];const a=ag();return moveAg(a,st,'',instant?0:d*.6,()=>{visitHouse(st,'C',{outside:true});cb(instant?0:d*.4)})}
   }
+  return cb(0);
 }
-function loop(){ if(!playing)return;
-  run(idx,false,(end,wait)=>{idx++; if(end||idx>=steps.length){stop();return} timer=setTimeout(loop,wait||0)});
-}
+function loop(){if(!playing)return;const s=steps[idx];if(!s){stop();return}
+  run(s,false,w=>{idx++;if(idx>=steps.length){stop();return}timer=setTimeout(loop,w||0)})}
 function play(){if(idx>=steps.length)reset();playing=true;btn();loop()}
 function stop(){playing=false;clearTimeout(timer);btn()}
-function btn(){document.getElementById('play').textContent=playing?T[lang].pause:T[lang].play}
-function stepOnce(){stop();if(idx>=steps.length)return;
-  // run until one visible action (a visit, alert or banner) has happened
-  const go=()=>run(idx,false,(end,w)=>{const s=steps[idx];idx++;if(idx<steps.length&&s&&(s.t==='move'||s.t==='seg'||s.t==='note'||s.t==='quitAtQuota'))go()});go()}
-function finish(){stop();while(idx<steps.length){run(idx,true,()=>{});idx++}}
+function btn(){document.getElementById('play').textContent=tx(playing?UI.pause:UI.play)}
+function stepOnce(){stop();const go=()=>{const s=steps[idx];if(!s)return;run(s,false,()=>{idx++;if(['move','seg','log','psu','two'].includes(s.t))go()})};go()}
+function finish(){stop();while(idx<steps.length){run(steps[idx],true,()=>{});idx++}}
 
-// ---------------------------------------------------------------- i18n & init
-function applyLang(){
-  document.documentElement.lang=lang;
-  const t=T[lang];
-  for(const k of ['title','sub','tab_correct','tab_errors','tab_whole','step','reset','finish','speed','count','rec','int','abs','disp','seg','code','recs','ints','log','leg','rules','foot']){
-    const e=document.getElementById(k.startsWith('tab_')?k:'t_'+k)||document.getElementById(k); if(e)e.textContent=t[k];}
-  document.getElementById('t_foot').textContent=t.foot;
-  btn();
-  const lg=document.getElementById('legend');lg.innerHTML='';
-  const add=(sw,label)=>{const d=document.createElement('div');d.innerHTML=sw;lg.appendChild(d);const s=document.createElement('div');s.textContent=label;lg.appendChild(s)};
+// ===================================================================== side panels, list, i18n
+function renderSitu(){const r=cur.rules[variant];const box=document.getElementById('situ');
+  box.innerHTML=`<h3>${tx(cur.title)} · ${tx(typeof cur.codes==='string'?cur.codes:cur.codes)}</h3><div class="st">${tx(cur.situ)}</div><ul>${r.map(x=>`<li>${tx(x)}</li>`).join('')}</ul>`;
+  const v=document.getElementById('verdict');v.textContent=tx(variant==='correct'?UI.vok:UI.vbad);v.className='verdict '+(variant==='correct'?'ok':'bad')}
+function renderList(){const nav=document.getElementById('list');nav.innerHTML=`<h2>${tx(UI.list)}</h2>`;
+  SC.forEach((s,i)=>{const d=document.createElement('div');d.className='sc';
+    d.innerHTML=`<div class="t">${i+1}. ${tx(s.title)}</div><div class="c">${tx(typeof s.codes==='string'?s.codes:s.codes)}</div>`;
+    for(const v of ['correct','wrong']){const b=document.createElement('button');b.className=(v==='correct'?'ok':'bad')+(s===cur&&v===variant?' on':'');
+      b.textContent=tx(v==='correct'?UI.correct:UI.wrong);b.onclick=()=>{cur=s;variant=v;renderList();reset();setUrl()};d.appendChild(b)}
+    nav.appendChild(d)})}
+function setUrl(){try{const q=new URLSearchParams(location.search);q.set('s',cur.id);q.set('v',variant);q.set('lang',lang);history.replaceState(null,'','?'+q)}catch(e){}}
+function renderLegend(){const lg=document.getElementById('legend');lg.innerHTML='';
+  const add=(sw,label)=>{const a=document.createElement('div');a.innerHTML=sw;lg.appendChild(a);const b=document.createElement('div');b.textContent=label;lg.appendChild(b)};
   const hs=(f,dash,ring)=>`<svg width="20" height="18" viewBox="-10 -10 20 18"><path d="${housePath(0,0,1)}" fill="${f}" stroke="#2b3640" stroke-width="1.4" ${dash?'stroke-dasharray="3 2"':''}/>${ring?'<circle r="8.5" cy="-1" fill="none" stroke="#d62828" stroke-width="2.4"/>':''}</svg>`;
-  for(const k of ['C','Y','N','A','A2','R','V'])add(hs(COL[k],k==='V'),t.o[k]);
-  add(hs('#fff',false,true),t.o.M);
+  for(const k of ['C','Y','N','A','A2','R','V'])add(hs(COL[k],k==='V'),tx(UI.o[k]));
+  add('<svg width="20" height="18" viewBox="-10 -16 20 20"><path d="M0 2 l-6 -11 a7 7 0 1 1 12 0 z" fill="#1d4a85"/></svg>',tx(UI.o.E));
+  add(hs('#fff',false,true),tx(UI.o.M));
   const sq=c=>`<svg width="20" height="16"><rect x="1" y="1" width="18" height="14" fill="${c}" stroke="#7d8b99"/></svg>`;
-  add(sq('var(--prog)'),t.segleg.prog);add(sq('var(--done)'),t.segleg.done);add(sq('var(--skip)'),t.segleg.bad);
-  document.getElementById('rules').innerHTML=t.rulesList.map(r=>`<li>${r}</li>`).join('');
-}
-document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x===b));applyLang();reset()});
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));reset()});
+  for(const k of ['prog','done','coded','bad'])add(sq(SEGF[k]),tx(UI.segleg[k]))}
+function applyLang(){document.documentElement.lang=lang;
+  document.getElementById('t_title').textContent=tx(UI.title);document.getElementById('t_sub').textContent=tx(UI.sub);
+  for(const k of ['step','reset','finish']){document.getElementById(k).textContent=tx(UI[k])}
+  document.getElementById('legbtn').textContent=tx(UI.leg);
+  for(const k of ['speed','count','rec','int','abs','rev','disp','seg','code','recs','ints','log'])document.getElementById('t_'+k).textContent=tx(UI[k]);
+  btn();renderLegend();renderList()}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{lang=b.dataset.l;document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x===b));applyLang();reset();setUrl()});
 document.getElementById('play').onclick=()=>playing?stop():play();
 document.getElementById('step').onclick=stepOnce;
 document.getElementById('reset').onclick=reset;
 document.getElementById('finish').onclick=finish;
+document.getElementById('legbtn').onclick=()=>document.getElementById('legend').classList.toggle('on');
 const q=new URLSearchParams(location.search);
 if(q.get('lang')==='en'){lang='en';document.querySelectorAll('.lang button').forEach(x=>x.classList.toggle('on',x.dataset.l==='en'))}
-if(q.get('mode')&&q.get('mode')!=='whole'){mode=q.get('mode');document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.m===mode))}
+if(q.get('embed'))document.body.classList.add('embed');
+if(q.get('video'))document.body.classList.add('video');
+if(q.get('speed'))document.getElementById('speed').value=q.get('speed');
+const want=SC.find(s=>s.id===q.get('s')||s.id===({correct:'basic',errors:'basic'})[q.get('mode')]);if(want)cur=want;
+if(q.get('v')==='wrong'||q.get('mode')==='errors')variant='wrong';
 applyLang();reset();
-if(q.get('final'))finish();
+if(q.get('final'))finish();else if(q.get('autoplay'))play();
 </script>
 </body>
 </html>

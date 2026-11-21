@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parcourir le PSU</title>
+<style>
+:root{--navy:#12305a;--navy2:#1d4a85;--ink:#1f2933;--muted:#5b6876;--line:#d5dbe3;--soft:#f3f5f8;--ok:#2e8b57;--bad:#c0392b;--amber:#b7791f;--orange:#d9772b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:#1b2330;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+html[lang=fr] [data-l=en],html[lang=en] [data-l=fr]{display:none!important}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center;background:#fff;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.slide{position:absolute;inset:0;display:none;padding:46px 60px 54px}
+.slide.on{display:block}
+.slide h1{margin:0 0 6px;font-size:36px;line-height:1.15;color:var(--navy)}
+.slide h2{margin:0 0 18px;font-size:20px;font-weight:400;color:var(--muted)}
+.slide p,.slide li{font-size:21px;line-height:1.38}
+.slide ul{margin:0;padding-left:26px}
+.slide li{margin-bottom:9px}
+.foot{position:absolute;left:60px;right:60px;bottom:16px;display:flex;justify-content:space-between;font-size:12.5px;color:#7a8592;border-top:1px solid var(--line);padding-top:7px}
+.slide .src{font-size:13.5px;color:#6b7684;margin-top:10px;line-height:1.35}
+.title{background:var(--navy);color:#fff;padding:0}
+.title .in{position:absolute;left:80px;top:170px;right:80px}
+.title h1{color:#fff;font-size:52px}
+.title h2{color:#cfe0f5;font-size:24px}
+.title .who{margin-top:46px;font-size:17px;color:#cfe0f5;line-height:1.6}
+.title .bar{position:absolute;left:80px;top:140px;width:90px;height:6px;background:#f2c94c}
+.divider{background:var(--navy2);color:#fff}
+.divider .in{position:absolute;left:80px;top:250px;right:80px}
+.divider h1{color:#fff;font-size:46px}.divider h2{color:#dbe7f7}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--soft);border-radius:10px;padding:16px 18px;border-left:6px solid var(--navy2)}
+.card h3{margin:0 0 6px;font-size:21px;color:var(--navy)}
+.card p{margin:0;font-size:17.5px;line-height:1.35}
+.card.ok{border-left-color:var(--ok)}.card.bad{border-left-color:var(--bad)}.card.amb{border-left-color:var(--amber)}
+.big{font-size:56px;font-weight:800;color:var(--navy);line-height:1}
+.num .card{text-align:left}
+.num .big{margin-bottom:6px}
+table{border-collapse:collapse;width:100%;font-size:15.5px}
+th,td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft);color:var(--navy)}
+td.c{font-weight:800;width:56px;text-align:center}
+tr.no td{color:#9aa3ad}
+.chip{display:inline-block;border-radius:12px;padding:2px 10px;font-size:14px;font-weight:700;margin-right:6px}
+.chip.ok{background:#e6f5ec;color:var(--ok)}.chip.bad{background:#fdecec;color:var(--bad)}.chip.c{background:#eaf1fb;color:var(--navy2)}
+.frame{position:absolute;left:40px;right:40px;top:122px;bottom:44px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#f4f6f9}
+.frame iframe{width:100%;height:100%;border:0}
+.sc .head{display:flex;align-items:baseline;gap:14px}
+.sc h1{font-size:30px}
+.tag{font-size:16px;font-weight:800;padding:4px 12px;border-radius:14px}
+.tag.ok{background:#e6f5ec;color:var(--ok)}.tag.bad{background:#fdecec;color:var(--bad)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.grid4 .card{padding:11px 13px}.grid4 .card h3{font-size:17px}.grid4 .card p{font-size:14px}
+.quote{border-left:6px solid #f2c94c;background:#fffbea;padding:14px 18px;font-size:20px;border-radius:6px}
+svg text{font-family:Arial,Helvetica,sans-serif}
+#nav{position:fixed;right:14px;bottom:12px;display:flex;gap:6px;align-items:center;z-index:5}
+#nav button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:5px;padding:5px 11px;cursor:pointer;font-size:14px}
+#nav button.on{background:#fff;color:var(--navy)}
+#count{color:#cfd8e3;font-size:13px;min-width:62px;text-align:center}
+#toc{position:fixed;inset:30px;background:#fff;z-index:6;display:none;overflow:auto;padding:20px 28px;border-radius:10px}
+#toc.on{display:block}
+#toc a{display:block;padding:4px 0;color:var(--navy);text-decoration:none;font-size:15px;border-bottom:1px solid var(--line)}
+@media print{html,body{overflow:visible;background:#fff}#nav,#toc{display:none}#stage{position:static;transform:none!important;box-shadow:none}
+  .slide{display:block;position:relative;page-break-after:always;height:720px}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="toc"></div>
+<div id="nav"><button id="tocb">≡</button><button id="prev">◀</button><span id="count"></span><button id="next">▶</button><button data-lang="fr" class="on">FR</button><button data-lang="en">EN</button></div>
+<script>
+const T=(fr,en)=>`<span data-l="fr">${fr}</span><span data-l="en">${en}</span>`;
+const TS=(fr,en)=>`<tspan data-l="fr">${fr}</tspan><tspan data-l="en">${en}</tspan>`;
+const B=(fr,en)=>`<div data-l="fr">${fr}</div><div data-l="en">${en}</div>`;
+const DEMO=location.pathname.includes('06_Slides')?'../04_Segment_protocol_demo/segment_protocol_demo.html':'assets/segment_protocol_demo.html';
+const FOOT=T('UNIKIN · Enquête de couverture vaccinale · Sankuru 2026','UNIKIN · Vaccination coverage survey · Sankuru 2026');
+const S=[];
+function slide(cls,html,toc){S.push({cls,html,toc})}
+function std(title,sub,body,toc){slide('',`<h1>${title}</h1>${sub?`<h2>${sub}</h2>`:''}${body}`,toc||title)}
+const li=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+
+// ------------------------------------------------------------------ opening
+slide('title',`<div class="bar"></div><div class="in"><h1>${T('Parcourir le PSU','Canvassing the PSU')}</h1>
+<h2>${T('Le protocole des segments compacts, pas à pas, avec les scénarios du terrain','The compact segment protocol, step by step, with the scenarios you will meet')}</h2>
+<div class="who">${T('Formation des enquêteurs, chefs d\'équipe et superviseurs','Training for enumerators, team chiefs and supervisors')}<br>${T('Enquête de couverture vaccinale du Sankuru · Université de Kinshasa','Sankuru vaccination coverage survey · University of Kinshasa')}</div></div>`,T('Titre','Title'));
+
+std(T('Ce que vous saurez faire','What you will be able to do'),'',li([
+ T('Trouver le segment 1 et le parcourir structure par structure, sans en sauter une.','Find Segment 1 and sweep it structure by structure, skipping none.'),
+ T('Savoir quand s\'arrêter : la cible de 6 entretiens et la règle « on finit le segment ».','Know when to stop: the target of 6 interviews and the "finish the segment" rule.'),
+ T('Établir l\'éligibilité et la date de naissance, même sans carte.','Establish eligibility and the date of birth, even without a card.'),
+ T('Réagir correctement : segment inondé, vide, derrière une rivière, insécurité, PSU vide.','Respond correctly: flooded, empty or river segment, insecurity, empty PSU.'),
+ T('Remplir le formulaire de disposition des segments et du PSU avec le bon code.','Complete the segment and PSU disposition form with the right code.')]));
+
+std(T('Pourquoi : chaque ménage doit avoir la même chance','Why: every household needs the same chance'),
+ T('Une enquête ne représente que les ménages qui pouvaient être choisis','A survey only represents the households that could be selected'),
+ `<div class="cols"><div>${li([
+ T('Si l\'on reste près de la route, on rate les ménages éloignés, souvent les moins vaccinés.','If we stay near the road we miss remote households, often the least vaccinated.'),
+ T('La couverture paraît alors meilleure qu\'elle ne l\'est. Aucune analyse ne peut corriger cela.','Coverage then looks better than it is. No analysis can correct that.'),
+ T('Le protocole retire tout choix à l\'équipe : où commencer, quelle maison, quand s\'arrêter.','The protocol removes every choice from the team: where to start, which house, when to stop.')])}</div>
+ <svg viewBox="0 0 520 380" width="520"><rect width="520" height="380" fill="#f3f5f8" rx="10"/>
+ <path d="M0 300 C120 280 200 330 520 290" stroke="#b9a37a" stroke-width="22" fill="none"/>
+ ${[[60,250],[130,262],[210,275],[300,272],[380,262],[460,255]].map(([x,y])=>`<path d="M${x-12} ${y+10}L${x-12} ${y-2}L${x} ${y-14}L${x+12} ${y-2}L${x+12} ${y+10}Z" fill="#2e8b57" stroke="#1f2933"/>`).join('')}
+ ${[[70,80],[160,120],[260,60],[350,140],[440,90],[110,170],[300,190],[420,200]].map(([x,y])=>`<path d="M${x-12} ${y+10}L${x-12} ${y-2}L${x} ${y-14}L${x+12} ${y-2}L${x+12} ${y+10}Z" fill="#fff" stroke="#c0392b" stroke-width="2"/>`).join('')}
+ <text x="20" y="352" font-size="17" fill="#2e8b57" font-weight="700">${TS('Visités : près de la route','Visited: near the road')}</text>
+ <text x="20" y="30" font-size="17" fill="#c0392b" font-weight="700">${TS('Jamais visités : loin de la route','Never visited: far from the road')}</text></svg></div>`);
+
+std(T('D\'où vient le PSU et ses segments','Where the PSU and its segments come from'),'',
+ `<div class="cols"><div>${li([
+ T('BGC tire les PSU à partir de données de population maillées (GRID3), proportionnellement à la population.','BGC draws PSUs from gridded population data (GRID3), with probability proportional to population.'),
+ T('Chaque PSU est découpé en segments compacts, <b>numérotés au hasard</b>.','Each PSU is divided into compact segments, <b>numbered at random</b>.'),
+ T('On commence par le segment 1 et on y visite <b>tous</b> les ménages ; si la cible n\'est pas atteinte, on passe au segment 2, puis 3…','Start with Segment 1 and visit <b>all</b> its households; if the target is not reached, go to Segment 2, then 3…'),
+ T('C\'est le plan « à deux degrés, micro-recensement par zone » du manuel GRID3.','This is the "two-stage, area-microcensus" design in the GRID3 manual.')])}
+ <p class="src">${T('Source : GRID3, <i>Designing and Implementing Gridded Population Surveys</i> (2022), plan 6, p. 45.','Source: GRID3, <i>Designing and Implementing Gridded Population Surveys</i> (2022), design 6, p. 45.')}</p></div>
+ <svg viewBox="0 0 500 380" width="500">${(()=>{const n=[[7,3,10,5],[9,1,8,11],[4,12,6,2]];let o='';n.forEach((r,i)=>r.forEach((v,j)=>{o+=`<rect x="${20+j*115}" y="${20+i*115}" width="115" height="115" fill="${v===1?'#fff3c4':v===2?'#e3f3e8':'#eef1f5'}" stroke="#7d8b99" stroke-width="1.5"/><circle cx="${77+j*115}" cy="${77+i*115}" r="20" fill="#fff" stroke="#12305a" stroke-width="2.5"/><text x="${77+j*115}" y="${84+i*115}" text-anchor="middle" font-size="20" font-weight="700" fill="#12305a">${v}</text>`}));return o+'<rect x="20" y="20" width="460" height="345" fill="none" stroke="#12305a" stroke-width="5"/>'})()}</svg></div>`);
+
+slide('num',`<h1>${T('Les chiffres à retenir','The numbers to remember')}</h1><h2>${T('Ils sont les mêmes pour toutes les équipes','They are the same for every team')}</h2>
+<div class="cols3">
+<div class="card ok"><div class="big">6</div><h3>${T('entretiens par PSU','interviews per PSU')}</h3><p>${T('Enfants de 12–23 mois. Cible fixée par l\'équipe le 20 nov. 2026.','Children aged 12–23 months. Target set by the team on 20 Nov 2026.')}</p></div>
+<div class="card"><div class="big">1</div><h3>${T('segment de départ','starting segment')}</h3><p>${T('Toujours le segment 1, puis numéro croissant.','Always Segment 1, then ascending numbers.')}</p></div>
+<div class="card amb"><div class="big">1+2</div><h3>${T('visite + revisites','visit + revisits')}</h3><p>${T('Au plus deux revisites chez un ménage absent.','At most two revisits to an absent household.')}</p></div>
+<div class="card"><div class="big">≤15 m</div><h3>${T('précision GPS','GPS accuracy')}</h3><p>${T('À la porte. Attendre jusqu\'à 5 minutes si besoin.','At the door. Wait up to 5 minutes if needed.')}</p></div>
+<div class="card"><div class="big">1</div><h3>${T('fiche par structure','record per structure')}</h3><p>${T('Même vide, non éligible, absente ou refusante.','Even if vacant, not eligible, absent or refusing.')}</p></div>
+<div class="card"><div class="big">~10</div><h3>${T('entretiens par équipe et par jour','interviews per team per day')}</h3><p>${T('Environ 2 PSU par jour. La vitesse ne justifie jamais un saut.','About 2 PSUs a day. Speed never justifies a skip.')}</p></div></div>`,T('Les chiffres à retenir','The numbers to remember'));
+
+std(T('Avant de partir','Before leaving'),T('Le chef d\'équipe vérifie avec chaque enquêteur la veille au soir','The team chief checks with each enumerator the evening before'),
+ `<div class="cols"><div>${li([
+ T('Limites du PSU et des segments visibles sur la carte du CAPI, avec les numéros.','PSU and segment boundaries visible on the CAPI map, with numbers.'),
+ T('Segment 1 noté sur la fiche d\'affectation.','Segment 1 written on the assignment sheet.'),
+ T('<b>Carte papier du PSU</b> : en secours si la tablette ou l\'application s\'arrête.','<b>Paper PSU map</b>: a backup if the tablet or app stops.'),
+ T('Version du CAPI à jour, une soumission de test faite.','Current CAPI version, one test submission sent.')])}</div><div>${li([
+ T('Téléphone et batterie externe chargés.','Phone and power bank charged.'),
+ T('Formulaires de consentement en français et en otetela.','Consent forms in French and Otetela.'),
+ T('Deux enquêteurs dans un PSU ? Blocs de segments écrits avant le départ.','Two enumerators in a PSU? Segment blocks written down before leaving.'),
+ T('Calendrier des événements locaux préparé en formation.','Calendar of local events prepared during training.')])}
+ <p class="src">${T('SOP-01, liste avant déploiement ; GRID3 (2022), section 2.1.2.2, p. 24 (carte papier).','SOP-01, pre-deployment list; GRID3 (2022), section 2.1.2.2, p. 24 (paper map).')}</p></div></div>`);
+
+std(T('Naviguer jusqu\'au PSU','Navigating to the PSU'),'',`<div class="cols"><div>${li([
+ T('Le <b>centroïde</b> sert à naviguer. On n\'interroge pas en route, ni au centroïde.','The <b>centroid</b> is for navigation. Do not interview on the way, or at the centroid.'),
+ T('Vérifier que le point bleu est dans le polygone du PSU.','Check that the blue dot is inside the PSU polygon.'),
+ T('Visite de courtoisie à l\'autorité locale.','Courtesy visit to the local authority.'),
+ T('Trouver le segment 1 sur la carte, le comparer à la fiche d\'affectation. Désaccord ? On s\'arrête et on appelle le superviseur.','Find Segment 1 on the map and compare it with the assignment sheet. Disagreement? Stop and call the supervisor.')])}</div>
+ <div class="card"><h3>${T('Outils','Tools')}</h3><p>${T('Application de navigation hors ligne (SW Maps) avec les limites du PSU et la position de l\'appareil ; carte papier en secours. Les cartes papier aident aussi à expliquer l\'enquête aux habitants et aux chefs.','Offline navigation app (SW Maps) showing the PSU boundary and the device position; a paper map as backup. Paper maps also help explain the survey to residents and leaders.')}</p>
+ <p class="src">${T('GRID3 (2022), section 2.1.2.2, p. 24.','GRID3 (2022), section 2.1.2.2, p. 24.')}</p></div></div>`);
+
+std(T('Entrer dans le segment 1 et fixer le balayage','Enter Segment 1 and fix the sweep'),'',`<div class="cols"><div>${li([
+ T('Le travail commence quand le marqueur est <b>dans</b> le polygone du segment.','Work starts when the marker is <b>inside</b> the segment polygon.'),
+ T('Commencer par la structure la plus proche du point d\'entrée.','Start with the structure nearest the entry point.'),
+ T('Fixer un sens de balayage (serpentin) pour tout le segment et le dire au chef d\'équipe.','Fix one sweep direction (serpentine) for the whole segment and tell the team chief.'),
+ T('Le sens ne change plus à l\'intérieur du segment.','The direction does not change inside the segment.')])}</div>
+ <svg viewBox="0 0 500 360" width="500"><rect x="20" y="20" width="460" height="320" fill="#fff3c4" stroke="#12305a" stroke-width="4"/>
+ <path d="M50 70 H450 V170 H50 V270 H450" fill="none" stroke="#1d4a85" stroke-width="3" stroke-dasharray="9 6"/>
+ ${[[90,70],[170,70],[250,70],[330,70],[410,70],[410,170],[330,170],[250,170],[170,170],[90,170],[90,270],[170,270],[250,270],[330,270],[410,270]].map(([x,y],i)=>`<path d="M${x-11} ${y+9}L${x-11} ${y-2}L${x} ${y-13}L${x+11} ${y-2}L${x+11} ${y+9}Z" fill="${i<8?'#2e8b57':'#fff'}" stroke="#1f2933"/><text x="${x}" y="${y+28}" text-anchor="middle" font-size="12" fill="#5b6876">${i+1}</text>`).join('')}
+ <circle cx="40" cy="55" r="9" fill="#12305a"/><text x="55" y="45" font-size="14" fill="#12305a" font-weight="700">${TS('entrée','entry')}</text></svg></div>`);
+
+std(T('Le balayage : chaque structure, une fiche','The sweep: every structure, one record'),'',`<div class="cols"><div>${li([
+ T('Aller à la structure suivante sur la ligne, une par une.','Go to the next structure on the line, one by one.'),
+ T('Ne jamais sauter une structure parce qu\'elle est loin, en hauteur, clôturée, semble vide ou « sans enfant ».','Never skip a structure because it is far, uphill, fenced, looks empty or "has no child".'),
+ T('Chaque structure produit une fiche, soumise <b>avant</b> d\'avancer, avec GPS ≤ 15 m à la porte.','Every structure produces a record, submitted <b>before</b> walking on, with GPS ≤ 15 m at the door.'),
+ T('Une structure hors du segment appartient au segment qui la contient : pas maintenant.','A structure outside the segment belongs to the segment that contains it: not now.')])}</div>
+ <div class="grid4" style="grid-template-columns:1fr 1fr">
+ <div class="card ok"><h3>${T('Entretien','Interview')}</h3><p>${T('Enfant de 12–23 mois : compte pour la cible.','Child aged 12–23 months: counts toward the target.')}</p></div>
+ <div class="card"><h3>${T('Non éligible','Not eligible')}</h3><p>${T('Pas d\'enfant de 0–23 mois : une fiche quand même.','No child aged 0–23 months: a record anyway.')}</p></div>
+ <div class="card amb"><h3>${T('Absent','Absent')}</h3><p>${T('Fiche, puis revisite.','Record, then revisit.')}</p></div>
+ <div class="card bad"><h3>${T('Refus','Refusal')}</h3><p>${T('Fiche, jamais remplacé par le voisin.','Record, never replaced by a neighbour.')}</p></div>
+ <div class="card"><h3>${T('Vide ou non résidentiel','Vacant or non-residential')}</h3><p>${T('Fiche avec GPS : la preuve du passage.','Record with GPS: proof the team passed.')}</p></div>
+ <div class="card"><h3>${T('Enfant 0–11 mois seulement','Child 0–11 months only')}</h3><p>${T('Entretien, hors cible.','Interview, not in the target.')}</p></div></div></div>`);
+
+std(T('Une structure sur une limite','A structure on a boundary'),T('C\'est l\'entrée principale qui décide','The main entrance decides'),`<div class="cols"><div>${li([
+ T('Limite entre deux segments : la structure appartient au segment qui contient son <b>entrée principale</b>. Noter la raison en commentaire.','Boundary between two segments: the structure belongs to the segment containing its <b>main entrance</b>. Note the reason in the comment.'),
+ T('Limite du PSU : même règle ; l\'entretien a lieu et la fiche porte le signal « hors limite » pour décision.','PSU boundary: same rule; the interview goes ahead and the record carries the "out of boundary" flag for review.'),
+ T('Chaque structure n\'est comptée que dans un seul segment.','Each structure is counted in one segment only.')])}
+ <p class="src">${T('SOP-01, section 7. Le manuel GRID3 propose une autre règle (limites nord et est incluses) : au Sankuru, on suit la SOP.','SOP-01, section 7. The GRID3 manual suggests another rule (north and east edges included): in Sankuru we follow the SOP.')}</p></div>
+ <svg viewBox="0 0 480 330" width="480"><rect x="20" y="20" width="220" height="290" fill="#fff3c4" stroke="#7d8b99" stroke-width="2"/><rect x="240" y="20" width="220" height="290" fill="#eef1f5" stroke="#7d8b99" stroke-width="2"/>
+ <line x1="240" y1="20" x2="240" y2="310" stroke="#12305a" stroke-width="4" stroke-dasharray="10 6"/>
+ <rect x="190" y="130" width="100" height="70" fill="#fff" stroke="#1f2933" stroke-width="2"/><rect x="200" y="170" width="18" height="30" fill="#2e8b57"/>
+ <text x="130" y="60" text-anchor="middle" font-size="20" font-weight="700" fill="#12305a">${TS('Segment 1','Segment 1')}</text><text x="350" y="60" text-anchor="middle" font-size="20" font-weight="700" fill="#12305a">${TS('Segment 2','Segment 2')}</text>
+ <text x="130" y="250" text-anchor="middle" font-size="16" fill="#2e8b57" font-weight="700">${TS('Porte → segment 1','Door → Segment 1')}</text></svg></div>`);
+
+std(T('À la porte : qui est éligible ?','At the door: who is eligible?'),'',`<div class="cols"><div>${li([
+ T('Un enfant de 0 à 23 mois qui <b>vit habituellement</b> ici et <b>a dormi ici la nuit dernière</b>.','A child aged 0 to 23 months who <b>usually lives</b> here and <b>slept here last night</b>.'),
+ T('Les enfants de 12–23 mois comptent pour la cible ; ceux de 0–11 mois sont interrogés hors cible.','Children aged 12–23 months count toward the target; those aged 0–11 months are interviewed outside it.'),
+ T('Il faut la mère ou la gardienne qui décide des vaccins. Si elle est absente, on n\'interroge pas une autre personne : on revient.','The mother or caregiver who decides on vaccination is needed. If she is away, do not interview someone else: come back.'),
+ T('Le consentement est lu en entier, chaque fois.','Consent is read in full, every time.')])}</div>
+ <div class="card"><h3>${T('Pourquoi cette règle','Why this rule')}</h3><p>${T('L\'âge décide de l\'éligibilité. Une erreur d\'âge fait entrer ou sortir un enfant de l\'échantillon.','Age decides eligibility. A mistake on age puts a child into or out of the sample.')}</p>
+ <p class="src">${T('OMS (2018), manuel de référence des enquêtes de couverture, section 4.1.2.','WHO (2018), vaccination coverage cluster surveys reference manual, section 4.1.2.')}</p></div></div>`);
+
+std(T('Trouver la date de naissance','Finding the date of birth'),T('Dans cet ordre','In this order'),`<div class="cols3">
+ <div class="card ok"><div class="big">1</div><h3>${T('Carte de vaccination','Vaccination card')}</h3><p>${T('La meilleure source. Recopier la date telle qu\'écrite.','The best source. Copy the date as written.')}</p></div>
+ <div class="card"><div class="big">2</div><h3>${T('Acte de naissance','Birth certificate')}</h3><p>${T('Pas de carte ? Demander l\'acte ou un autre document.','No card? Ask for the birth certificate or another document.')}</p></div>
+ <div class="card amb"><div class="big">3</div><h3>${T('Calendrier des événements locaux','Calendar of local events')}</h3><p>${T('Fêtes religieuses, élections, saisons des pluies, récoltes, événements du village. Préparé en formation.','Religious feasts, elections, rainy seasons, harvests, village events. Prepared during training.')}</p></div></div>
+ <div class="quote" style="margin-top:22px">${T('« Cela peut prendre du temps mais reste essentiel. »','"It might be time consuming but is essential."')}</div>
+ <p class="src">${T('OMS (2018), section 4.1.2, p. 50 (p. 73 de l\'édition française).','WHO (2018), section 4.1.2, p. 50 (p. 73 of the French edition).')}</p>`);
+
+std(T('L\'entretien, dans l\'ordre','The interview, in order'),'',`<div class="cols"><div>${li([
+ T('Rappel de la mère <b>avant</b> de demander la carte.','Caregiver recall <b>before</b> asking for the card.'),
+ T('Demander la carte : « Vous en a-t-on donné une ? L\'avez-vous encore ? Pouvez-vous l\'apporter ? »','Ask for the card: "Were you ever given one? Do you still have it? Can you bring it?"'),
+ T('Laisser le temps de la chercher ; proposer de revenir si elle est enfermée.','Give time to find it; offer to come back if it is locked away.'),
+ T('Saisir chaque date visible telle qu\'écrite ; photo nette de toute la carte.','Enter every visible date as written; a clear photo of the whole card.')])}</div>
+ <div class="card"><h3>${T('Si le CAPI signale une date','If the CAPI flags a date')}</h3><p>${T('Revérifier sur la carte avant de partir. Si la carte montre bien cette date, la garder et l\'écrire en commentaire. C\'est la gestion des données qui décide ensuite.','Recheck it on the card before leaving. If the card shows that date, keep it and write a comment. Data management decides afterwards.')}</p>
+ <p class="src">${T('OMS (2018), sections 4.1.2 et 4.1.4 ; SOP-01.','WHO (2018), sections 4.1.2 and 4.1.4; SOP-01.')}</p></div></div>`);
+
+std(T('Absent, refus, report : une visite et deux revisites','Absent, refusal, postponed: one visit and two revisits'),'',`<div class="cols"><div>${li([
+ T('Personne : fiche, puis revisite le jour même ou le lendemain matin.','Nobody home: record, then revisit the same day or next morning.'),
+ T('Au plus <b>deux revisites</b> ; ensuite c\'est un non-contact documenté.','At most <b>two revisits</b>; after that it is a documented non-contact.'),
+ T('Chaque visite = une nouvelle fiche, avec l\'identifiant HHI08 de la 1re visite.','Every visit = a new form, with the HHI08 ID from the 1st visit.'),
+ T('Refus : on remercie, on enregistre, on ne revient pas, on ne remplace jamais.','Refusal: thank, record, do not return, never replace.')])}</div>
+ <div class="card"><h3>${T('Ce que dit l\'OMS','What WHO says')}</h3><p>${T('Les visites du soir ou du petit matin sont souvent nécessaires. Une 2e et une 3e visite doivent avoir lieu avant de quitter la grappe ; on enregistre le résultat de chaque visite.','Evening or early-morning visits are often needed. A second and third visit should take place before leaving the cluster; record the outcome of each visit.')}</p>
+ <p class="src">${T('OMS (2018), section 4.1.1, p. 50.','WHO (2018), section 4.1.1, p. 50.')}</p></div></div>`);
+
+std(T('Cible atteinte ? On finit le segment','Target reached? Finish the segment'),T('Règle 5.1 de la SOP-01','SOP-01 Rule 5.1'),`<div class="cols"><div>${li([
+ T('La cible ne compte qu\'une fois le segment en cours épuisé.','The target counts only once the current segment is exhausted.'),
+ T('Partir au milieu = des ménages sans aucune chance d\'être choisis.','Leaving halfway = households with no chance of selection.'),
+ T('Cible atteinte dans le segment 1 : on finit le 1 et on ne commence pas le 2.','Target reached in Segment 1: finish Segment 1 and do not start Segment 2.'),
+ T('Les entretiens au-delà de 6 sont gardés.','Interviews beyond 6 are kept.')])}</div>
+ <svg viewBox="0 0 480 300" width="480"><rect x="20" y="40" width="440" height="200" fill="#fff3c4" stroke="#12305a" stroke-width="4"/>
+ ${[...Array(10).keys()].map(i=>{const x=55+(i%5)*90,y=i<5?100:190;const c=i<6?'#2e8b57':'#fff';return`<path d="M${x-12} ${y+10}L${x-12} ${y-2}L${x} ${y-14}L${x+12} ${y-2}L${x+12} ${y+10}Z" fill="${c}" stroke="#1f2933"/>`}).join('')}
+ <text x="20" y="28" font-size="17" font-weight="700" fill="#2e8b57">${TS('6e entretien ici','6th interview here')}</text>
+ <path d="M330 270 H455" stroke="#d9772b" stroke-width="5" marker-end="url(#a)"/><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#d9772b"/></marker></defs>
+ <text x="40" y="282" font-size="17" font-weight="700" fill="#d9772b">${TS('… et on continue jusqu\'à la dernière structure','… and keep going to the last structure')}</text></svg></div>`);
+
+std(T('Déclarer le segment, puis le numéro suivant','Declare the segment, then the next number'),'',`<div class="cols"><div>${li([
+ T('Faire le tour du segment ou revoir les points GPS : aucun groupe de structures oublié.','Walk the perimeter or review the GPS points: no group of structures left out.'),
+ T('Déclarer au chef d\'équipe : numéro, fiches, ménages éligibles, entretiens, absents à revoir.','Declare to the team chief: number, records, eligible households, interviews, absent households to revisit.'),
+ T('Le chef d\'équipe note le code de disposition du segment.','The team chief records the segment disposition code.')])}</div><div>${li([
+ T('Segment suivant = numéro suivant, pas le voisin le plus proche.','Next segment = next number, not the nearest neighbour.'),
+ T('Naviguer par numéro sur la carte, puis vérifier que le marqueur est dans le nouveau polygone.','Navigate by number on the map, then check the marker is inside the new polygon.'),
+ T('Un segment n\'est pas fini tant que des revisites restent à faire.','A segment is not finished while revisits are outstanding.')])}</div></div>`);
+
+std(T('Qui décide quoi','Who decides what'),'',`<table><tr><th>${T('Rôle','Role')}</th><th>${T('Décide','Decides')}</th><th>${T('Ne fait jamais','Never does')}</th></tr>
+<tr><td>${T('Enquêteur','Enumerator')}</td><td>${T('L\'ordre des structures sur sa ligne ; le résultat de chaque visite','The order of structures on the line; the result of each visit')}</td><td>${T('Sauter un segment ou une structure de lui-même','Skip a segment or a structure on their own')}</td></tr>
+<tr><td>${T('Chef d\'équipe','Team chief')}</td><td>${T('Blocs de segments ; code de chaque segment ; première revue des fiches','Segment blocks; each segment\'s code; first review of forms')}</td><td>${T('Autoriser un saut de segment','Authorise a segment skip')}</td></tr>
+<tr><td>${T('Superviseur de terrain','Field supervisor')}</td><td>${T('Saut d\'un segment inaccessible (codes D, E, F, J) ; cas limites','Skipping an inaccessible segment (codes D, E, F, J); edge cases')}</td><td>${T('Remplacer un PSU','Replace a PSU')}</td></tr>
+<tr><td>${T('DQM','DQM')}</td><td>${T('Informé le jour même ; vérifie codes et cartes','Told the same day; checks codes against maps')}</td><td>${T('Parler aux contrôleurs indépendants des fiches vérifiées','Discuss records under verification with back-checkers')}</td></tr>
+<tr><td>${T('Coordination et PI','Coordination and PI')}</td><td>${T('Remplacement d\'un PSU par sa réserve (PSU code 5)','Replacing a PSU by its backup (PSU code 5)')}</td><td>${T('Laisser une équipe choisir un autre village','Let a team choose another village')}</td></tr>
+<tr><td>${T('Superviseur et DQM, avant le terrain','Supervisor and DQM, before fieldwork')}</td><td>${T('Code G sur image satellite','Code G from satellite imagery')}</td><td>${T('Accepter un G décidé sur le terrain','Accept a G decided in the field')}</td></tr></table>`);
+
+std(T('Codes de disposition des segments','Segment disposition codes'),T('Formulaire de disposition V2 (20 novembre 2026)','Disposition form V2 (20 November 2026)'),`<table>
+<tr><th>Code</th><th>${T('Signification','Meaning')}</th><th>${T('Au Sankuru','In Sankuru')}</th></tr>
+<tr><td class="c">A</td><td>${T('Parcouru en entier, dans l\'ordre, avec des fiches remplies','Canvassed in full, in order, with forms completed')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr class="no"><td class="c">B</td><td>${T('Parcouru en entier, hors ordre','Canvassed in full, out of order')}</td><td>${T('Non : ordre strict','No: strict order')}</td></tr>
+<tr><td class="c">C1 / C2</td><td>${T('Parcouru en entier, aucune fiche : C1 aucune habitation ; C2 habitations sans fiche (erreur à vérifier)','Canvassed in full, no form: C1 no dwelling; C2 dwellings without a form (error to check)')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr><td class="c">D1–D13</td><td>${T('Inaccessible : inondation, marais, forêt, relief, route coupée, champs, camp, école, marché…','Inaccessible: flooding, swamp, forest, terrain, road cut, fields, camp, school, market…')}</td><td>${T('Oui, superviseur','Yes, supervisor')}</td></tr>
+<tr><td class="c">E1–E4</td><td>${T('Eau : rivière, lac, île sans pirogue, traversée dangereuse','Water: river, lake, island with no canoe, unsafe crossing')}</td><td>${T('Oui, superviseur','Yes, supervisor')}</td></tr>
+<tr><td class="c">F1–F9</td><td>${T('Autre : insécurité, tension, refus d\'accès, épidémie, trop loin','Other: insecurity, tension, access refused, epidemic, too far')}</td><td>${T('Oui, superviseur','Yes, supervisor')}</td></tr>
+<tr><td class="c">G1 / G2</td><td>${T('Décidé sur image satellite','Decided from satellite imagery')}</td><td>${T('Avant le terrain','Before fieldwork')}</td></tr>
+<tr><td class="c">H</td><td>${T('Erreur de l\'enquêteur : segment sauté sans le vouloir','Enumerator error: segment skipped by mistake')}</td><td>${T('À déclarer honnêtement','Report honestly')}</td></tr>
+<tr><td class="c">I</td><td>${T('Inconnu : on ne sait pas si le segment a été visité','Unknown: not known whether the segment was visited')}</td><td>${T('Revue','Review')}</td></tr>
+<tr><td class="c">J</td><td>${T('Incomplet, dans l\'ordre ; motif pour la partie non faite','Incomplete, in order; reason for the part not done')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr class="no"><td class="c">K / L</td><td>${T('Incomplet hors ordre ; PSU parcouru sans ordre','Incomplete out of order; PSU combed without order')}</td><td>${T('Non','No')}</td></tr></table>`);
+
+std(T('Pour chaque segment non fait : un motif et six champs','For every segment not done: a reason and six fields'),'',`<div class="cols"><div><table>
+<tr><th>${T('Champ','Field')}</th><th>${T('Ce qu\'on note','What to record')}</th></tr>
+<tr><td class="c">MR</td><td>${T('Motif principal : un seul sous-code','Main reason: one sub-code')}</td></tr>
+<tr><td class="c">SH</td><td>${T('Habitations visibles ? gens vus ?','Dwellings visible? people seen?')}</td></tr>
+<tr><td class="c">NL</td><td>${T('Nombre estimé d\'habitations (0, 1–5, 6–20…)','Estimated dwellings (0, 1–5, 6–20…)')}</td></tr>
+<tr><td class="c">PT</td><td>${T('Part non faite : tout, plus ou moins de la moitié','Share not done: all, more or less than half')}</td></tr>
+<tr><td class="c">DU</td><td>${T('Barrière temporaire ou permanente','Temporary or permanent barrier')}</td></tr>
+<tr><td class="c">SRC · PH · VR</td><td>${T('Source, photo géolocalisée, visa du superviseur','Source, geotagged photo, supervisor approval')}</td></tr></table></div>
+<div class="card"><h3>${T('Pourquoi tant de détails ?','Why so much detail?')}</h3><p>${T('GiveWell veut savoir combien d\'enfants ont pu être exclus, où, et pourquoi : zone vide ou inaccessible. Les champs répondent à ces questions et permettent de vérifier chaque décision.','GiveWell wants to know how many children may have been excluded, where and why: empty or inaccessible. The fields answer these questions and let each decision be checked.')}</p></div></div>`);
+
+std(T('Codes du PSU','PSU codes'),T('Un code par PSU, à la fin','One code per PSU, at the end'),`<table>
+<tr><th>Code</th><th>${T('Signification','Meaning')}</th><th>${T('Au Sankuru','In Sankuru')}</th></tr>
+<tr><td class="c">1</td><td>${T('Selon le protocole : tous les segments requis étaient accessibles','According to the protocol: all required segments were accessible')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr><td class="c">2</td><td>${T('Selon le protocole, avec des segments sautés (chacun avec son sous-code)','According to the protocol, with segments skipped (each with its sub-code)')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr><td class="c">3</td><td>${T('Pas selon le protocole : des numéros élevés avant les plus bas','Not according to the protocol: higher numbers before lower ones')}</td><td>${T('À éviter, à signaler','Avoid; report')}</td></tr>
+<tr class="no"><td class="c">4</td><td>${T('Tout le PSU parcouru sans suivre les segments','Whole PSU visited without following segments')}</td><td>${T('Non','No')}</td></tr>
+<tr><td class="c">5</td><td>${T('Remplacé par une PSU de réserve : motif + visa de la Coordination','Replaced by a backup PSU: reason + Coordination approval')}</td><td>${T('Oui','Yes')}</td></tr>
+<tr><td class="c">6</td><td>${T('Épuisé sous la cible : tous les segments faits ou codés','Exhausted below target: every segment worked or coded')}</td><td>${T('Oui','Yes')}</td></tr></table>`);
+
+// ------------------------------------------------------------------ scenarios
+const SCN=[
+ ['basic',T('Parcours de base','Basic canvassing'),'A · PSU 1'],
+ ['quota1',T('Cible atteinte dans le segment 1','Target reached in Segment 1'),'A · PSU 1'],
+ ['flood',T('Segment inondé','Flooded segment'),'D1 · PSU 2'],
+ ['empty',T('Segment sans habitation','Uninhabited segment'),'C1 · PSU 1'],
+ ['river',T('Segment derrière la rivière','Segment across the river'),'E3 · PSU 2'],
+ ['danger',T('Insécurité pendant le travail','Insecurity during work'),'J + F1 · PSU 2'],
+ ['swamp',T('Marais dans une partie du segment','Swamp in part of a segment'),'J + D2 · PSU 2'],
+ ['two',T('Deux enquêteurs dans un PSU','Two enumerators in one PSU'),T('blocs','blocks')],
+ ['below',T('Cible non atteinte après tous les segments','Target not reached after every segment'),'PSU 6'],
+ ['emptypsu',T('PSU entièrement vide','Entirely empty PSU'),'C1 · PSU 5'],
+ ['g1',T('Décision sur image satellite','Decision from satellite imagery'),'G1 · PSU 2']];
+slide('divider',`<div class="in"><h1>${T('Les scénarios du terrain','Field scenarios')}</h1><h2>${T('Chaque situation du formulaire de disposition, jouée deux fois : la bonne pratique, puis l\'erreur','Each situation on the disposition form, played twice: the right practice, then the mistake')}</h2></div>`,T('Scénarios','Scenarios'));
+std(T('Onze situations que vous rencontrerez','Eleven situations you will meet'),T('Cliquez sur Lecture dans chaque diapositive ; « Étape suivante » pour discuter','Press Play on each slide; "Next step" to discuss'),
+ `<div class="grid4">${SCN.map((s,i)=>`<div class="card"><h3>${i+1}. ${s[1]}</h3><p><span class="chip c">${s[2]}</span></p></div>`).join('')}</div>`);
+SCN.forEach((s,i)=>{for(const v of ['correct','wrong']){
+  slide('sc',`<div class="head"><h1>${i+1}. ${s[1]}</h1><span class="tag ${v==='correct'?'ok':'bad'}">${v==='correct'?T('BONNE PRATIQUE','RIGHT PRACTICE'):T('CE QU\'IL NE FAUT PAS FAIRE','WHAT NOT TO DO')}</span><span class="chip c">${s[2]}</span></div>
+  <div class="frame" data-src="${DEMO}?embed=1&s=${s[0]}&v=${v}"></div>`,`${i+1}. ${s[1]} · ${v==='correct'?T('correct','correct'):T('erreur','wrong')}`)}});
+
+// ------------------------------------------------------------------ the real case
+const BK=(()=>{ // redraw of a PSU from the BGC map review, names removed
+  const g=[[6,20,21],[5,4,19],[2,3,18],[1,17,16],[15,8,9],[14,7,13],[10,11,12]];let o='';
+  g.forEach((r,i)=>r.forEach((v,j)=>{const hit=v===1||v===2||v===17;o+=`<rect x="${10+j*62}" y="${10+i*50}" width="62" height="50" fill="${hit?'#fde8d0':'#fff'}" stroke="#7d8b99"/><text x="${14+j*62}" y="${26+i*50}" font-size="14" font-weight="700" fill="${hit?'#c0392b':'#5b6876'}">${v}</text>`}));
+  const pts=[[48,172,'#2e8b57'],[56,166,'#2e8b57'],[40,180,'#2e8b57'],[62,178,'#2e8b57'],[50,188,'#2e8b57'],[66,170,'#2e8b57'],[44,194,'#2e8b57'],[44,150,'#d9772b'],[52,144,'#d9772b'],[60,152,'#d9772b'],[66,146,'#d9772b'],[40,140,'#d9772b'],[100,190,'#7b3fa0']];
+  o+=pts.map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="3.2" fill="${c}"/>`).join('');
+  o+=`<rect x="10" y="10" width="186" height="350" fill="none" stroke="#12305a" stroke-width="3"/>`;return o})();
+const TL=(()=>{const x=t=>40+(t-17*60)/(75)*560;const E1=[[1028,'#2e8b57'],[1033,'#2e8b57'],[1040,'#2e8b57'],[1046,'#2e8b57'],[1051,'#2e8b57'],[1056,'#2e8b57'],[1061,'#2e8b57'],[1068,'#d9772b'],[1073,'#d9772b'],[1080,'#d9772b'],[1083,'#d9772b'],[1096,'#7b3fa0']];
+  const E2=[[1027,'#2e8b57'],[1030,'#2e8b57'],[1033,'#2e8b57'],[1037,'#2e8b57'],[1041,'#2e8b57'],[1045,'#2e8b57'],[1050,'#2e8b57'],[1052,'#2e8b57'],[1055,'#2e8b57'],[1059,'#2e8b57'],[1062,'#2e8b57'],[1068,'#d9772b'],[1072,'#d9772b'],[1076,'#d9772b'],[1080,'#d9772b'],[1084,'#d9772b'],[1087,'#d9772b']];
+  let o=`<line x1="40" x2="600" y1="40" y2="40" stroke="#d5dbe3"/><line x1="40" x2="600" y1="100" y2="100" stroke="#d5dbe3"/>`;
+  o+=`<text x="40" y="25" font-size="14" font-weight="700" fill="#12305a">${TS('Enquêteur A','Enumerator A')}</text><text x="40" y="85" font-size="14" font-weight="700" fill="#12305a">${TS('Enquêteur B','Enumerator B')}</text>`;
+  o+=E1.map(([t,c])=>`<circle cx="${x(t)}" cy="40" r="6" fill="${c}"/>`).join('')+E2.map(([t,c])=>`<circle cx="${x(t)}" cy="100" r="6" fill="${c}"/>`).join('');
+  for(const t of [1020,1035,1050,1065,1080,1095])o+=`<text x="${x(t)}" y="135" text-anchor="middle" font-size="12" fill="#5b6876">${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}</text>`;
+  return o})();
+std(T('Ce que le protocole n\'est pas : un cas réel','What the protocol is not: a real case'),T('Redessiné d\'après la revue des cartes de BGC (Kongo Central, juillet 2026) ; noms masqués, heures approximatives','Redrawn from BGC\'s map review (Kongo Central, July 2026); names removed, times approximate'),
+ `<div style="display:grid;grid-template-columns:270px 1fr;gap:30px"><svg viewBox="0 0 206 370" width="265">${BK}</svg>
+ <div><svg viewBox="0 0 640 145" width="700">${TL}</svg>
+ <div style="font-size:14px;margin:4px 0 10px"><span class="chip" style="background:#e3f3e8;color:#2e8b57">${T('segment 1','Segment 1')}</span><span class="chip" style="background:#fde8d0;color:#b45309">${T('segment 2','Segment 2')}</span><span class="chip" style="background:#efe3f6;color:#7b3fa0">${T('segment 17','Segment 17')}</span></div>
+ ${li([T('Deux enquêteurs dans les <b>mêmes</b> segments au même moment : pas de blocs.','Two enumerators in the <b>same</b> segments at the same time: no blocks.'),
+  T('Segments 1 et 2 travaillés en une heure, sur une petite partie seulement.','Segments 1 and 2 worked in one hour, only a small part of each.'),
+  T('Puis saut au segment 17 : les segments 3 à 16 sont ignorés.','Then a jump to Segment 17: Segments 3 to 16 are ignored.'),
+  T('Bon protocole : blocs séparés, chaque segment épuisé, numéros dans l\'ordre, saut seulement avec le superviseur.','Right protocol: separate blocks, each segment exhausted, numbers in order, skips only with the supervisor.')])}</div></div>`);
+
+std(T('Les pratiques interdites','Prohibited practices'),T('Chacune est détectée par un indicateur de suivi','Each one is detected by a monitoring indicator'),`<div class="cols" style="font-size:18px"><div>${li([
+ T('Choisir ou changer le segment de départ.','Choosing or changing the starting segment.'),T('Commencer N+1 avant d\'avoir déclaré N.','Starting N+1 before declaring N complete.'),
+ T('Quitter un segment à la cible avant de l\'épuiser.','Leaving a segment at the target before it is exhausted.'),T('Sauter une structure (distance, terrain, apparence).','Skipping a structure (distance, terrain, appearance).'),
+ T('Remplacer un ménage refusant ou absent par le voisin.','Replacing a refusing or absent household by a neighbour.'),T('Ne pas soumettre de fiche pour une structure non éligible, absente, refusante ou vide.','Not submitting a record for a non-eligible, absent, refusing or vacant structure.'),
+ T('GPS pris loin de la structure ou au-delà de 15 m.','GPS recorded away from the structure or worse than 15 m.')])}</div><div>${li([
+ T('Remplir des fiches loin de la structure, ou plusieurs d\'un coup.','Completing forms away from the structure, or several at once.'),T('Interroger hors du segment déclaré ou hors du PSU.','Interviewing outside the declared segment or the PSU.'),
+ T('Demander la carte avant le rappel.','Asking for the card before the recall questions.'),T('Suggérer des réponses ou raccourcir le consentement.','Suggesting answers or shortening the consent.'),
+ T('Partager un téléphone ou un code PIN.','Sharing a phone or a PIN.'),T('Contacter un contrôleur indépendant au sujet des fiches vérifiées.','Contacting an independent back-checker about records under verification.')])}</div></div>`);
+
+std(T('Fin de journée : la chaîne de revue','End of day: the review chain'),'',`<div class="grid4">
+ <div class="card"><h3>1. ${T('Chef d\'équipe','Team chief')}</h3><p>${T('Chaque fiche : complète, photo lisible, GPS, segment et PSU corrects.','Every form: complete, readable photo, GPS, segment and PSU correct.')}</p></div>
+ <div class="card"><h3>2. ${T('Superviseur','Supervisor')}</h3><p>${T('Cohérence, points GPS, dates comparées à la photo ; envoi au serveur.','Consistency, GPS points, dates compared with the photo; upload.')}</p></div>
+ <div class="card"><h3>3. ${T('Gestion des données','Data management')}</h3><p>${T('Alertes A1 à A13, questions renvoyées aux équipes.','Alerts A1 to A13, queries sent back to teams.')}</p></div>
+ <div class="card"><h3>4. DQM</h3><p>${T('Revue indépendante, contre-enquêtes, audit de couverture des segments.','Independent review, back-checks, segment coverage audit.')}</p></div></div>
+ <div class="quote" style="margin-top:24px">${T('Un doute sur le terrain ? Appelez le superviseur avant de quitter le ménage : corriger sur place est facile, corriger après est presque impossible.','In doubt in the field? Call the supervisor before leaving the household: fixing it on the spot is easy, fixing it afterwards is almost impossible.')}</div>`);
+
+std(T('À vous : quel code ?','Your turn: which code?'),T('Répondez sans regarder les diapositives précédentes','Answer without looking back'),`<div class="grid4" style="grid-template-columns:1fr 1fr">
+ <div class="card"><h3>1</h3><p>${T('La 6e interview arrive à la 5e maison du segment 1, qui en compte 12.','The 6th interview comes at house 5 of Segment 1, which has 12.')}</p></div>
+ <div class="card"><h3>2</h3><p>${T('Le segment 3 est un marché sans habitation ; l\'équipe le parcourt en entier.','Segment 3 is a market with no dwelling; the team walks all of it.')}</p></div>
+ <div class="card"><h3>3</h3><p>${T('La piste vers le segment 2 est sous l\'eau ; le superviseur a donné son accord.','The track to Segment 2 is under water; the supervisor has approved.')}</p></div>
+ <div class="card"><h3>4</h3><p>${T('Les 5 segments sont faits ; 4 entretiens seulement.','All 5 segments are done; only 4 interviews.')}</p></div></div>
+ <p class="src" style="font-size:15px">${T('Réponses : 1. finir le segment 1 (A, PSU 1) · 2. C1 · 3. D1 (PSU 2) · 4. PSU 6, jamais hors du PSU.','Answers: 1. finish Segment 1 (A, PSU 1) · 2. C1 · 3. D1 (PSU 2) · 4. PSU 6, never outside the PSU.')}</p>`);
+
+std(T('À retenir','Key points'),'',li([
+ T('Segment 1, puis numéro croissant. Personne ne choisit.','Segment 1, then ascending numbers. Nobody chooses.'),
+ T('Chaque structure, une fiche, soumise à la porte avec GPS.','Every structure, one record, submitted at the door with GPS.'),
+ T('6 entretiens, mais on finit toujours le segment en cours.','6 interviews, but always finish the current segment.'),
+ T('Une visite et deux revisites ; un refus n\'est jamais remplacé.','One visit and two revisits; a refusal is never replaced.'),
+ T('Un segment ne se saute qu\'avec le superviseur, avec un sous-code, une photo et un visa.','A segment is skipped only with the supervisor, with a sub-code, a photo and an approval.'),
+ T('Le code écrit doit correspondre à la carte des points GPS.','The code written must match the map of GPS points.')])+
+ `<p class="src" style="margin-top:22px">${T('Sources : Protocole d\'étude Sankuru V1.0 ; SOP-01 V1.0 ; formulaire de disposition V2 ; OMS, manuel de référence des enquêtes de couverture vaccinale (2018) ; GRID3, <i>Designing and Implementing Gridded Population Surveys</i> (2022).','Sources: Sankuru Study Protocol V1.0; SOP-01 V1.0; disposition form V2; WHO vaccination coverage cluster surveys reference manual (2018); GRID3, <i>Designing and Implementing Gridded Population Surveys</i> (2022).')}</p>`);
+
+// ------------------------------------------------------------------ player
+const st=document.getElementById('stage');
+S.forEach((s,i)=>{const d=document.createElement('section');d.className='slide '+(s.cls||'');d.innerHTML=s.html+(s.cls==='title'||s.cls==='divider'?'':`<div class="foot"><span>${FOOT}</span><span>${i+1}</span></div>`);st.appendChild(d)});
+const slides=[...st.children];let cur=0;
+function fit(){const k=Math.min(innerWidth/1280,innerHeight/720)*.98;st.style.transform=`translate(-50%,-50%) scale(${k})`}
+function show(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,j)=>{s.classList.toggle('on',j===cur);
+    const f=s.querySelector('.frame');if(f){if(j===cur&&!f.firstChild){const ifr=document.createElement('iframe');ifr.src=f.dataset.src+'&lang='+document.documentElement.lang;ifr.title='animation';f.appendChild(ifr)}if(j!==cur&&f.firstChild)f.innerHTML=''}});
+  document.getElementById('count').textContent=`${cur+1} / ${slides.length}`;try{history.replaceState(null,'','#'+(cur+1))}catch(e){}}
+function setLang(l){document.documentElement.lang=l;document.querySelectorAll('#nav [data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===l));
+  const f=slides[cur].querySelector('.frame');if(f)f.innerHTML='';show(cur);buildToc();try{localStorage.setItem('slang',l)}catch(e){}}
+function buildToc(){const t=document.getElementById('toc');t.innerHTML='';S.forEach((s,i)=>{const a=document.createElement('a');a.href='#';a.innerHTML=`${i+1}. ${s.toc||''}`;a.onclick=e=>{e.preventDefault();t.classList.remove('on');show(i)};t.appendChild(a)})}
+document.getElementById('prev').onclick=()=>show(cur-1);document.getElementById('next').onclick=()=>show(cur+1);
+document.getElementById('tocb').onclick=()=>document.getElementById('toc').classList.toggle('on');
+document.querySelectorAll('#nav [data-lang]').forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(cur+1)}if(['ArrowLeft','PageUp'].includes(e.key))show(cur-1);
+  if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+addEventListener('resize',fit);fit();addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1));if(n&&n-1!==cur)show(n-1)});
+let l0='fr';try{l0=localStorage.getItem('slang')||'fr'}catch(e){}const ql=new URLSearchParams(location.search).get('lang');if(ql)l0=ql;
+document.documentElement.lang=l0;document.querySelectorAll('#nav [data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===l0));
+buildToc();show((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>

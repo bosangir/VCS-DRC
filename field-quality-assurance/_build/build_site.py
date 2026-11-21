@@ -49,7 +49,8 @@ def table(cols, rows, cls=''):
 
 # ------------------------------------------------------------------ sections
 NAV = [('start', 'Commencer ici', 'Start here'), ('process', 'Le processus', 'The process'),
-       ('segments', 'Démo des segments', 'Segment demo'), ('card', 'Dates de carte', 'Card dates'),
+       ('segments', 'Scénarios animés', 'Animated scenarios'), ('slides', 'Diaporama', 'Slide deck'), ('videos', 'Vidéos', 'Videos'),
+       ('card', 'Dates de carte', 'Card dates'),
        ('duration', 'Durée active', 'Active duration'), ('roles', 'Par rôle', 'By role'),
        ('codes', 'Codes et alertes', 'Codes and alerts'), ('selfcheck', 'Auto-contrôle', 'Self-check'),
        ('files', 'Téléchargements', 'Downloads')]
@@ -86,24 +87,56 @@ process = f'''
 </p>
 </section>'''
 
-segments = f'''
+SCN = [('basic', 'Parcours de base', 'Basic canvassing', 'A · PSU 1'), ('quota1', 'Cible atteinte dans le segment 1', 'Target reached in Segment 1', 'A · PSU 1'),
+       ('flood', 'Segment inondé', 'Flooded segment', 'D1 · PSU 2'), ('empty', 'Segment sans habitation', 'Uninhabited segment', 'C1 · PSU 1'),
+       ('river', 'Segment derrière la rivière', 'Segment across the river', 'E3 · PSU 2'), ('danger', 'Insécurité pendant le travail', 'Insecurity during work', 'J + F1 · PSU 2'),
+       ('swamp', 'Marais dans une partie du segment', 'Swamp in part of a segment', 'J + D2 · PSU 2'), ('two', 'Deux enquêteurs dans un PSU', 'Two enumerators in one PSU', 'blocs / blocks'),
+       ('below', 'Cible non atteinte après tous les segments', 'Target not reached after every segment', 'PSU 6'), ('emptypsu', 'PSU entièrement vide', 'Entirely empty PSU', 'C1 · PSU 5'),
+       ('g1', 'Décision sur image satellite', 'Decision from satellite imagery', 'G1 · PSU 2')]
+VIDS = os.path.join(SRC, '07_Videos')
+os.makedirs(os.path.join(A, 'videos'), exist_ok=True)
+for f in os.listdir(VIDS) if os.path.isdir(VIDS) else []:
+    if f.endswith('.mp4'):
+        shutil.copyfile(os.path.join(VIDS, f), os.path.join(A, 'videos', f))
+for f in os.listdir(os.path.join(SRC, '06_Slides')):
+    if f.endswith('.pptx'):
+        shutil.copyfile(os.path.join(SRC, '06_Slides', f), os.path.join(A, f))
+shutil.copyfile(os.path.join(SRC, '06_Slides', 'canvassing_slides.html'), os.path.join(OUT, 'slides.html'))
+
+
+def vid(sid, v):
+    return ''.join(f'<video data-l="{l}" controls preload="metadata" src="assets/videos/{sid}_{v}_{l}.mp4"></video>' for l in ('fr', 'en'))
+
+
+gallery = ''.join(f"""<div class="vcard"><h3>{i + 1}. {T(fr, en)} <span class="code">{c}</span></h3><div class="vpair">
+<figure>{vid(sid, 'correct')}<figcaption class="okc">{T('Bonne pratique', 'Right practice')}</figcaption></figure>
+<figure>{vid(sid, 'wrong')}<figcaption class="badc">{T('Ce qu\'il ne faut pas faire', 'What not to do')}</figcaption></figure></div></div>"""
+                  for i, (sid, fr, en, c) in enumerate(SCN))
+
+segments = f"""
 <section id="segments">
-<h2>{T('Le protocole des segments, démontré', 'The segment protocol, demonstrated')}</h2>
-<p>{T("Un PSU simulé de 12 segments. Choisissez un scénario, puis <b>Lecture</b> ou <b>Étape suivante</b> pour avancer structure par structure et discuter.",
-      'A simulated PSU of 12 segments. Choose a scenario, then <b>Play</b> or <b>Next step</b> to move one structure at a time and discuss.')}</p>
-<div class="frame"><iframe id="demo" title="Segment protocol demonstration" src="assets/segment_protocol_demo.html?lang=fr" loading="lazy"></iframe></div>
-<p class="btns"><a class="btn ghost" id="demo-open" href="assets/segment_protocol_demo.html?lang=fr" target="_blank" rel="noopener">{T('Ouvrir la démonstration en plein écran', 'Open the demonstration full screen')}</a></p>
-<div class="two">
-<figure><img data-l="fr" src="assets/fig_correct_fr.png" alt="" loading="lazy"><img data-l="en" src="assets/fig_correct_en.png" alt="" loading="lazy">
-<figcaption>{T("<b>Correct.</b> Segment 1 d'abord, balayage en serpentin, une fiche par structure, segment terminé même après le quota, puis retours chez les absents.",
-               '<b>Correct.</b> Segment 1 first, serpentine sweep, one record per structure, segment finished even after the quota, then return visits to absent households.')}</figcaption></figure>
-<figure><img data-l="fr" src="assets/fig_errors_fr.png" alt="" loading="lazy"><img data-l="en" src="assets/fig_errors_en.png" alt="" loading="lazy">
-<figcaption>{T("<b>Erreurs fréquentes.</b> Mauvais segment de départ, segment 1 abandonné, refus remplacé par le voisin, saut au segment 8, départ au quota. Les cercles rouges sont des ménages qui n'avaient aucune chance d'être sélectionnés.",
-               '<b>Common errors.</b> Wrong starting segment, Segment 1 abandoned, refusal replaced by the neighbour, jump to Segment 8, leaving at the quota. Red circles are households that had no chance of selection.')}</figcaption></figure>
-</div>
-<p class="note">{T("L'ordre des segments est strict au Sankuru (décision du 18 novembre 2026). Pas de parcours du PSU entier hors ordre (code B), même dans les petits PSU. Quota non atteint après tous les segments : PSU « épuisé sous le quota ».",
-                   'Segment order is strict in Sankuru (decision of 18 November 2026). No whole-PSU canvassing out of order (code B), even in small PSUs. Quota not reached after every segment: PSU "exhausted below quota".')}</p>
-</section>'''
+<h2>{T('Le protocole des segments, en scénarios animés', 'The segment protocol, in animated scenarios')}</h2>
+<p>{T("Onze situations du formulaire de disposition, chacune jouée deux fois : la bonne pratique, puis l'erreur. Choisissez un scénario à gauche, puis <b>Lecture</b> ou <b>Étape suivante</b>. Tout tient sur un écran.",
+      'Eleven situations from the disposition form, each played twice: the right practice, then the mistake. Choose a scenario on the left, then <b>Play</b> or <b>Next step</b>. Everything fits on one screen.')}</p>
+<p class="btns"><a class="btn" id="demo-open" href="assets/segment_protocol_demo.html?lang=fr" target="_blank" rel="noopener">{T('Ouvrir les scénarios en plein écran', 'Open the scenarios full screen')}</a>
+<a class="btn ghost" href="slides.html" target="_blank" rel="noopener">{T('Ouvrir le diaporama de formation', 'Open the training slide deck')}</a></p>
+<div class="frame tall"><iframe id="demo" title="Segment protocol scenarios" src="assets/segment_protocol_demo.html?lang=fr" loading="lazy"></iframe></div>
+<p class="note">{T("L'ordre des segments est strict au Sankuru. Cible : 6 entretiens d'enfants de 12–23 mois par PSU, mais on finit toujours le segment en cours. Cible non atteinte après tous les segments : PSU code 6, jamais de travail hors du PSU.",
+                   'Segment order is strict in Sankuru. Target: 6 interviews of children aged 12–23 months per PSU, but the segment in progress is always finished. Target not reached after every segment: PSU code 6, never work outside the PSU.')}</p>
+</section>
+<section id="slides">
+<h2>{T('Diaporama : parcourir le PSU', 'Slide deck: canvassing the PSU')}</h2>
+<p>{T("Le diaporama de la journée 2 : pourquoi le protocole, avant de partir, le balayage, l'éligibilité et la date de naissance (calendrier des événements locaux), les visites et revisites, les codes de disposition, puis chaque scénario en vidéo. Flèches du clavier pour avancer ; FR / EN en bas à droite.",
+      'The Day 2 deck: why the protocol, before leaving, the sweep, eligibility and the date of birth (calendar of local events), visits and revisits, disposition codes, then each scenario on video. Arrow keys to move; FR / EN at the bottom right.')}</p>
+<div class="frame"><iframe title="Slide deck" src="slides.html" loading="lazy"></iframe></div>
+<p class="btns"><a class="btn" href="slides.html" target="_blank" rel="noopener">{T('Ouvrir le diaporama en plein écran', 'Open the slide deck full screen')}</a>
+<a class="btn ghost" href="assets/Day 2 - Canvassing the PSU - Sankuru - Bernard.pptx" download>{T('Télécharger la version PowerPoint (avec vidéos)', 'Download the PowerPoint version (with videos)')}</a></p>
+</section>
+<section id="videos">
+<h2>{T('Les scénarios en vidéo', 'The scenarios on video')}</h2>
+<p>{T('Pour WhatsApp ou une projection sans internet : chaque vidéo dure moins d\'une minute.', 'For WhatsApp or showing offline: each video is under a minute.')}</p>
+<div class="vgrid">{gallery}</div>
+</section>"""
 
 card = f'''
 <section id="card">
@@ -199,7 +232,9 @@ files = f'''
 <li><a href="assets/Key_messages_quality_data_by_role_EN.docx" download>{T('Guide des messages clés par rôle (Word, anglais)', 'Key messages guide by role (Word, English)')}</a></li>
 <li><a href="assets/Process_infographic_FR.pdf" download>{T('Affiche du processus (PDF, français)', 'Process poster (PDF, French)')}</a> · <a href="assets/Process_infographic_FR.png" download>PNG</a></li>
 <li><a href="assets/Process_infographic_EN.pdf" download>{T('Affiche du processus (PDF, anglais)', 'Process poster (PDF, English)')}</a> · <a href="assets/Process_infographic_EN.png" download>PNG</a></li>
-<li><a href="assets/segment_protocol_demo.html" download>{T('Démonstration des segments (fonctionne hors ligne)', 'Segment demonstration (works offline)')}</a></li>
+<li><a href="assets/Day 2 - Canvassing the PSU - Sankuru - Bernard.pptx" download>{T('Diaporama « Parcourir le PSU » (PowerPoint, anglais, avec vidéos)', 'Slide deck "Canvassing the PSU" (PowerPoint, English, with videos)')}</a></li>
+<li><a href="slides.html" target="_blank" rel="noopener">{T('Diaporama web (français et anglais)', 'Web slide deck (French and English)')}</a></li>
+<li><a href="assets/segment_protocol_demo.html" download>{T('Scénarios animés (fonctionne hors ligne)', 'Animated scenarios (works offline)')}</a></li>
 </ul>
 <p class="small">{T("Sources : Protocole d'étude Sankuru V1.0 (5 novembre 2026), SOP-01 Protocole compact des segments V1.0 (7 novembre 2026), Plan DQA V1.0, réunions BGC–UNIKIN des 13 et 16 novembre 2026. En cas de différence, le Protocole d'étude prévaut. Les PSU, segments et ménages des démonstrations sont simulés.",
                     'Sources: Sankuru Study Protocol V1.0 (5 November 2026), SOP-01 Compact Segment Protocol V1.0 (7 November 2026), DQA Plan V1.0, BGC–UNIKIN meetings of 13 and 16 November 2026. Where they differ, the Study Protocol governs. PSUs, segments and households in the demonstrations are simulated.')}</p>
@@ -230,7 +265,12 @@ details{margin:12px 0}summary{cursor:pointer;color:var(--acc);font-weight:bold}
 figure{margin:0}img{max-width:100%;height:auto;display:block}.poster img{border:1px solid var(--line)}
 .btns{display:flex;flex-wrap:wrap;gap:8px}.btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:8px 14px;border-radius:3px;border:1px solid var(--acc);font:inherit;cursor:pointer}
 .btn.ghost{background:#fff;color:var(--acc)}
-.frame{border:1px solid var(--line);border-radius:4px;overflow:hidden}.frame iframe{width:100%;height:780px;border:0;display:block}
+.frame{border:1px solid var(--line);border-radius:4px;overflow:hidden}.frame iframe{width:100%;aspect-ratio:16/9;height:auto;border:0;display:block}
+.frame.tall iframe{aspect-ratio:auto;height:min(82vh,780px)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(470px,1fr));gap:14px}.vcard{border:1px solid var(--line);border-radius:4px;padding:10px 12px}
+.vcard h3{margin:0 0 8px;font-size:1rem}.vcard .code{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:6px}
+.vpair{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vpair video{width:100%;display:block;border:1px solid var(--line);background:#f4f6f9}
+.okc{color:var(--ok);font-weight:700}.badc{color:var(--bad);font-weight:700}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.two figure{border:1px solid var(--line);padding:8px}figcaption{font-size:.9rem;color:var(--muted);margin-top:6px}
 .tw{overflow-x:auto;margin:10px 0}table{border-collapse:collapse;width:100%;font-size:.93rem}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--soft)}
 table.codes td:first-child{font-weight:bold;text-align:center;width:52px}
@@ -255,8 +295,8 @@ table.doses tr.hit td{background:#fdf1e7}table.doses tr.fut td{background:#fbe3e
 ul.check{list-style:none;padding:0;columns:2;column-gap:24px}ul.check li{break-inside:avoid;margin:0 0 8px}ul.check input{transform:scale(1.2);margin-right:6px}
 ul.files li{margin:6px 0}code{font-family:Consolas,monospace;font-size:.88em}
 footer{background:var(--soft);padding:18px 16px;font-size:.85rem;color:var(--muted)}footer .in{max-width:1080px;margin:0 auto}
-@media (max-width:760px){.two,.cardgrid{grid-template-columns:1fr}.phone{position:static}.frame iframe{height:640px}ul.check{columns:1}header h1{font-size:1.35rem}}
-@media print{nav,header .lang,.frame,.btns,#segments,#card,#duration,#process{display:none}section{page-break-inside:avoid}}
+@media (max-width:760px){.two,.cardgrid{grid-template-columns:1fr}.phone{position:static}.frame.tall iframe{height:70vh}.vgrid{grid-template-columns:1fr}.vpair{grid-template-columns:1fr}ul.check{columns:1}header h1{font-size:1.35rem}}
+@media print{nav,header .lang,.frame,.btns,#segments,#slides,#videos,#card,#duration,#process{display:none}section{page-break-inside:avoid}}
 '''
 
 JS = r'''

@@ -17,7 +17,7 @@ EN = {
  "five": [
   ("Segment 1 first, then ascending numbers.", "BGC numbered the segments at random. Nobody chooses where to start, and the next segment is the next number, not the nearest one."),
   ("Every structure, one record.", "Including no eligible child, nobody home, refusal, vacant and non-residential. An empty or abandoned area also gets a record with GPS."),
-  ("Finish the segment, even when the quota is reached.", "The quota (about 5 interviews of children aged 12–23 months) is checked only once the segment in progress is exhausted."),
+  ("Finish the segment, even when the quota is reached.", "The target (6 interviews of children aged 12–23 months, team decision of 20 November 2026) is checked only once the segment in progress is exhausted."),
   ("Records are made at the structure.", "Recall before card, every visible date entered, card photo, GPS of 15 m or better at the door, submitted before walking on."),
   ("What is written must match the map.", "Disposition codes, segment numbers and PSU numbers are checked against the GPS points. A code that does not match the map is an error, not a detail."),
   ("No whole-PSU canvassing out of order.", "In Sankuru the segment order is strict, even in small PSUs. Quota not reached after all segments are exhausted? Record the PSU as exhausted below quota and tell the supervisor."),
@@ -209,7 +209,7 @@ FR = {
  "five": [
   ("Le segment 1 d'abord, puis les numéros croissants.", "BGC a numéroté les segments au hasard. Personne ne choisit où commencer, et le segment suivant est le numéro suivant, pas le plus proche."),
   ("Chaque structure, une fiche.", "Y compris pas d'enfant éligible, personne à la maison, refus, inoccupé et non résidentiel. Une zone vide ou abandonnée reçoit aussi une fiche avec GPS."),
-  ("Finir le segment, même quand le quota est atteint.", "Le quota (environ 5 entretiens d'enfants de 12–23 mois) ne se vérifie qu'une fois le segment en cours épuisé."),
+  ("Finir le segment, même quand le quota est atteint.", "La cible (6 entretiens d'enfants de 12–23 mois, décision de l'équipe du 20 novembre 2026) ne se vérifie qu'une fois le segment en cours épuisé."),
   ("La fiche se fait devant la structure.", "Rappel avant la carte, toutes les dates visibles saisies, photo de la carte, GPS de 15 m ou mieux devant la porte, soumission avant de partir."),
   ("Ce qui est écrit doit correspondre à la carte.", "Codes de disposition, numéros de segment et de PSU sont comparés aux points GPS. Un code qui ne correspond pas à la carte est une erreur, pas un détail."),
   ("Pas de PSU entier hors ordre.", "Au Sankuru, l'ordre des segments est strict, même dans les petits PSU. Quota non atteint après avoir épuisé tous les segments ? Noter le PSU « épuisé sous le quota » et informer le superviseur."),

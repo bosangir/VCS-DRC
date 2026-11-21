@@ -177,7 +177,7 @@ def scene(n, L):
     if n == 7:
         g = f'<text x="20" y="28" font-size="13" font-weight="700" fill="{NAVY}">{L["s7a"]}</text>'
         g += f'<rect x="20" y="38" width="170" height="20" rx="10" fill="#e1e7ee"/><rect x="20" y="38" width="170" height="20" rx="10" fill="{GREEN}"/>'
-        g += f'<text x="105" y="53" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">5 / 5 ✓</text>'
+        g += f'<text x="105" y="53" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">6 / 6 ✓</text>'
         for i, x in enumerate([40, 100, 160]):
             g += house(x, 120, 0.9, fill="#d8efe1", check="ok")
         for i, x in enumerate([232, 292]):
@@ -267,7 +267,7 @@ FR = dict(
     s4a="Une fiche par structure, même vide",
     seq=["Saluer", "Dépister", "Consentir", "Rappel", "Carte", "Photo", "GPS ≤15 m", "Soumettre"],
     s6a="Absent : revenir", s6b="Refus : noter", s6c="Pas de voisin",
-    s7a="Quota ≈ 5 entretiens 12–23 mois", s7b="Finir le segment", s7c="Puis arrêter",
+    s7a="Cible : 6 entretiens, 12–23 mois", s7b="Finir le segment", s7c="Puis arrêter",
     s8a="Disposition des segments", s8b="Code ↔ carte GPS",
     s9=["Enquêteur", "Chef d'équipe", "Superviseur", "Serveur", "Gestion / Qualité"],
     s10a="Contre-appel", s10b="Audit satellite", s10c="Revue cartes",
@@ -336,7 +336,7 @@ EN = dict(
     s4a="One record per structure, even an empty one",
     seq=["Greet", "Screen", "Consent", "Recall", "Card", "Photo", "GPS ≤15 m", "Submit"],
     s6a="Absent: return", s6b="Refusal: record", s6c="No neighbour",
-    s7a="Quota ≈ 5 interviews, 12–23 months", s7b="Finish the segment", s7c="Then stop",
+    s7a="Target: 6 interviews, 12–23 months", s7b="Finish the segment", s7c="Then stop",
     s8a="Segment disposition", s8b="Code ↔ GPS map",
     s9=["Enumerator", "Team chief", "Supervisor", "Server", "Data / Quality"],
     s10a="Phone check", s10b="Satellite audit", s10c="Card review",
